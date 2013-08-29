@@ -1,4 +1,4 @@
-define(['controllers/map'], function () {
+define(['controllers/map', 'models/bouy'], function (map, Bouy) {
   'use strict';
 
   describe('Controller: MapCtrl', function () {
@@ -17,8 +17,8 @@ define(['controllers/map'], function () {
       });
     }));
 
-    it('should have a currentPoint', function () {
-      scope.map.currentPoint.should.be.defined;
+    it('should have a currentBouy', function () {
+      scope.map.currentBouy.should.be.defined;
     });
     it('should have a graph', function () {
       scope.map.graph.should.be.defined;
@@ -30,10 +30,10 @@ define(['controllers/map'], function () {
       scope.map.graph.edges.should.be.defined;
     });
     it('should be able to add bouys', function() {
-      var bouy = {
+      var bouy = new Bouy('test', {
         latitude: 1,
         longitude: 1
-      }
+      });
       scope.map.addBouy(bouy);
       scope.map.graph.vertices.should.contain(bouy);
     })

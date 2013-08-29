@@ -1,18 +1,22 @@
 <h1>Map</h1>
 
 <div classs="map">
-    <p>Current position: {{map.currentPoint.latitude}}, {{map.currentPoint.longitude}}</p>
-    <h2>Vertices</h2>
+    <p>Current position: {{map.currentBouy.location.latitude}}, {{map.currentBouy.location.longitude}}</p>
+    <p>Name: {{map.currentBouy.name}}</p>
+    <h2>Bouys</h2>
     <ul>
+        <li ng-hide="map.graph.vertices.length">No bouys defined yet</li>
         <li ng-repeat="vertex in map.graph.vertices">{{vertex}}</li>
     </ul>
 </div>
 <div classs="functions">
     <form>
+        <label for="functions-name">name</label>
+        <input id="functions-name" type="text" ng-model="map.currentBouy.name">
         <label for="functions-latitude">latitude</label>
-        <input id="functions-latitude" type="text" ng-model="map.currentPoint.latitude">
+        <input id="functions-latitude" type="text" ng-model="map.currentBouy.location.latitude">
         <label for="functions-longitude">longitude</label>
-        <input id ="functions-longitude" type="text" ng-model="map.currentPoint.longitude">
+        <input id ="functions-longitude" type="text" ng-model="map.currentBouy.location.longitude">
         <a ng-click="map.addBouy()">add</a>
     </form>
 </div>

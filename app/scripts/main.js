@@ -35,6 +35,12 @@ require([
     'routes',
     'config',
 
+    // Models
+    'models/point',
+    'models/edge',
+    'models/graph',
+    'models/bouy',
+
     // Controllers
     'controllers/home',
     'controllers/navbar',

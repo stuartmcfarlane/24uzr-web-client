@@ -1,32 +1,24 @@
-define(['app'], function (app) {
+define(['app', 'models/bouy', 'models/graph'], function (app, Bouy, Graph) {
     'use strict';
 
-    function Point (latitude, longitude) {
-        this.latitude = latitude;
-        this.longitude = longitude;
-    };
-
     function MapController($scope) {
-        this.graph = {
-            vertices: [],
-            edges: []
-        };
+        this.graph = new Graph();
 
-        this.currentPoint = new Point(0,0);
+        this.currentBouy = new Bouy();
 
         $scope.map = this;
     };
 
-    MapController.prototype.addBouy = function addBouy(position) {
-        if (position === undefined) {
-            position = this.currentPoint;
-            this.currentPoint = new Point(0,0);
+    MapController.prototype.addBouy = function addBouy(bouy) {
+        if (bouy === undefined) {
+            bouy = this.currentBouy;
+            this.currentBouy = new Bouy();
         }
-        this.graph.vertices.push(position);
+        this.graph.addVertex(bouy);
     };
 
     MapController.prototype.addLeg = function addLeg(leg) {
-        this.graph.edges.push(leg);
+        this.graph.addEdge(leg);
     };
 
     app.controller('Map', ['$scope', MapController]);
