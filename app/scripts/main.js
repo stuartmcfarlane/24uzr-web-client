@@ -42,6 +42,7 @@ require([
     'controllers/logout',
     'controllers/registration',
     'controllers/users',
+    'controllers/map',
 
     // Directives
     'directives/string-to-number',

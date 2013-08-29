@@ -10,7 +10,7 @@ define(['app'], function (app) {
 
     $scope.$on('$auth:loginFailure', function (event, data) {
       console.log("LoginController:",event,data);
-      if(data === '403') {
+      if(data === undefined || data === '403') {
         alert('Invalid username/password');
       } 
     });

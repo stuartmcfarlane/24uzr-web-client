@@ -18,6 +18,10 @@ define(['angular', 'app'], function (angular, app) {
         templateUrl: t.view('users'),
         controller: 'Users'
       })
+      .when('/map', {
+        templateUrl: t.view('map'),
+        controller: 'Map'
+      })
       .when('/login', {
         templateUrl: t.view('login'),
         controller: 'Login',

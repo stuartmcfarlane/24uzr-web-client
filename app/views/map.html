@@ -1,0 +1,19 @@
+<h1>Map</h1>
+
+<div classs="map">
+    <p>Current position: {{map.currentPoint.latitude}}, {{map.currentPoint.longitude}}</p>
+    <h2>Vertices</h2>
+    <ul>
+        <li ng-repeat="vertex in map.graph.vertices">{{vertex}}</li>
+    </ul>
+</div>
+<div classs="functions">
+    <form>
+        <label for="functions-latitude">latitude</label>
+        <input id="functions-latitude" type="text" ng-model="map.currentPoint.latitude">
+        <label for="functions-longitude">longitude</label>
+        <input id ="functions-longitude" type="text" ng-model="map.currentPoint.longitude">
+        <a ng-click="map.addBouy()">add</a>
+    </form>
+</div>
+<script>debugger</script>
