@@ -7,6 +7,8 @@ define(['app', 'models/bouy', 'models/graph'], function (app, Bouy, Graph) {
         this.currentBouy = new Bouy();
 
         $scope.map = this;
+        var bouyName = document.getElementById('bouy-name');
+        bouyName && bouyName.focus();
     };
 
     MapController.prototype.addBouy = function addBouy(bouy) {
@@ -15,6 +17,8 @@ define(['app', 'models/bouy', 'models/graph'], function (app, Bouy, Graph) {
             this.currentBouy = new Bouy();
         }
         this.graph.addVertex(bouy);
+        var bouyName = document.getElementById('bouy-name');
+        bouyName && bouyName.focus();
     };
 
     MapController.prototype.addLeg = function addLeg(leg) {

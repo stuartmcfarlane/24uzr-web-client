@@ -47,7 +47,6 @@ require([
     'controllers/login',
     'controllers/logout',
     'controllers/registration',
-    'controllers/users',
     'controllers/map',
 
     // Directives

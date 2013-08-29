@@ -1,23 +1,57 @@
-<h1>Map</h1>
-
-<div classs="map">
-    <p>Current position: {{map.currentBouy.location.latitude}}, {{map.currentBouy.location.longitude}}</p>
-    <p>Name: {{map.currentBouy.name}}</p>
-    <h2>Bouys</h2>
-    <ul>
-        <li ng-hide="map.graph.vertices.length">No bouys defined yet</li>
-        <li ng-repeat="vertex in map.graph.vertices">{{vertex}}</li>
-    </ul>
+<div class="row">
+    <div class="col-md-8">
+        <div class="panel panel-default">
+            <div class="panel-heading">Map</div>
+            <div class="map panel-body">
+                <p>Current bouy:
+                    <span class="label label-default">{{map.currentBouy.name}}</span>
+                    <span ng-show="map.currentBouy.location">
+                        {{map.currentBouy.location.x}}, {{map.currentBouy.location.y}}
+                    </span>
+                    <span ng-hide="map.currentBouy.location || map.currentBouy.name">No bouy selected</span>
+                </p>
+                <h2>Bouys</h2>
+                <ul>
+                    <li ng-hide="map.graph.vertices.length">No bouys defined yet</li>
+                    <li ng-repeat="vertex in map.graph.vertices"><span class="label label-default">{{vertex.name}}</span> {{vertex.location.x}}, {{vertex.location.y}}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">Add a bouy</div>
+            <div class="functions panel-body">
+                <form class="form-horizontal" role="form">
+                    <div class="offset-md-1 col-md-12">
+                        <div class="form-group input-group">
+                            <input id="bouy-name" type="text" class="form-control"
+                                placeholder="Name of the bouy"
+                                tabindex="1"
+                                ng-model="map.currentBouy.name">
+                            <label for="bouy-name" class="input-group-addon">name</label>
+                        </div>
+                        <div class="form-group input-group">
+                            <input id="bouy-latitude" type="text" class="form-control"
+                                tabindex="2"
+                                placeholder="Latitude of the bouy"
+                                ng-model="map.currentBouy.location.x">
+                            <label for="bouy-latitude" class="input-group-addon">latitude</label>
+                        </div>
+                        <div class="form-group input-group">
+                            <input id ="bouy-longitude" type="text" class="form-control"
+                                tabindex="3"
+                                placeholder="Longitude of the bouy"
+                                ng-model="map.currentBouy.location.y">
+                            <label for="bouy-longitude" class="input-group-addon">longitude</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" ng-click="map.addBouy()">
+                        <i class="glyphicon-plus icon-white icon-large"></i>
+                        Add
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
-<div classs="functions">
-    <form>
-        <label for="functions-name">name</label>
-        <input id="functions-name" type="text" ng-model="map.currentBouy.name">
-        <label for="functions-latitude">latitude</label>
-        <input id="functions-latitude" type="text" ng-model="map.currentBouy.location.latitude">
-        <label for="functions-longitude">longitude</label>
-        <input id ="functions-longitude" type="text" ng-model="map.currentBouy.location.longitude">
-        <a ng-click="map.addBouy()">add</a>
-    </form>
-</div>
-<script>debugger</script>
