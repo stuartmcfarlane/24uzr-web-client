@@ -10,11 +10,7 @@
                     </span>
                     <span ng-hide="map.currentBouy.location || map.currentBouy.name">No bouy selected</span>
                 </p>
-                <h2>Bouys</h2>
-                <ul>
-                    <li ng-hide="map.graph.vertices.length">No bouys defined yet</li>
-                    <li ng-repeat="vertex in map.graph.vertices"><span class="label label-default">{{vertex.name}}</span> {{vertex.location.x}}, {{vertex.location.y}}</li>
-                </ul>
+                <div id="sigma-canvas"></div>
             </div>
         </div>
     </div>
