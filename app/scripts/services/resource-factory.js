@@ -1,4 +1,4 @@
-define(['angular', 'app'],function (angular) {
+define(['angular', 'app'],function (angular, app) {
   'use strict';
 
   /**
@@ -40,7 +40,7 @@ define(['angular', 'app'],function (angular) {
      * @return {resource} The actual resource for resourceName.
      */
     var builder = function ( $resource, $httpOptions ) {
-      var url = $httpOptions.domain+'/'+resourceName+'/:id';
+      var url = $httpOptions.domain+'/api/v1/'+resourceName+'/:id';
       var defaults = {};
       var actions =  {
         'get':    {method:'GET'},

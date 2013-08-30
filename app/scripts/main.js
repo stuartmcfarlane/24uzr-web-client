@@ -61,6 +61,7 @@ require([
     'services/debug',
     'services/http-options',
     'services/user',
+    'services/api',
     'services/templates',
     'services/browser-detect',
     'services/resource-factory',

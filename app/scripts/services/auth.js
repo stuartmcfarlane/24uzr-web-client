@@ -119,6 +119,24 @@ define(['angular', 'app'], function (angular, app) {
       var userServiceName = 'UserService';
 
       /**
+       * @name apiService
+       * @type {Object}
+       * @propertyOf ngSeed.providers:$authProvider
+       * @description 
+       * The api service.
+       */
+      var apiService = null;
+
+      /**
+       * @name apiServiceName
+       * @type {String}
+       * @propertyOf ngSeed.providers:$authProvider
+       * @description
+       * The name of the service to $inject.
+       */
+      var apiServiceName = 'ApiService';
+
+      /**
        * @name handlers
        * @type {Object}
        * @propertyOf ngSeed.providers:$authProvider
@@ -141,13 +159,20 @@ define(['angular', 'app'], function (angular, app) {
         $get: ['$rootScope', '$location', '$route', '$injector',
         function ($rootScope, $location, $route, $injector) {
 
-
           if(!userService && userServiceName) {
             userService = $injector.get(userServiceName);
           }
 
           if (!userService) {
             throw new Error('$auth: please configure a userService');
+          }
+
+          if(!apiService && apiServiceName) {
+            apiService = $injector.get(apiServiceName);
+          }
+
+          if (!apiService) {
+            throw new Error('$auth: please configure an apiService');
           }
 
           if (!handlers.loginStart) {
@@ -406,6 +431,19 @@ define(['angular', 'app'], function (angular, app) {
             throw new Error('$auth: setUserService expects a string to use $injector upon instantiation');
           }
           userServiceName = usr;
+        },
+
+        /**
+         * @ngdoc function
+         * @methodOf ngSeed.providers:$authProvider
+         * @name setApiService
+         * @param  {String} usr the api service name
+         */
+        setApiService: function (api) {
+          if(typeof api !== 'string') {
+            throw new Error('$auth: setApiService expects a string to use $injector upon instantiation');
+          }
+          apiServiceName = api;
         },
 
         /**
