@@ -15,7 +15,8 @@ require.config({
     'http-auth-interceptor': '../components/angular-http-auth/src/http-auth-interceptor',
     chai: '../components/chai/chai',
     sinon: '../components/sinon/lib/sinon',
-    'angular-mocks':'../components/angular-mocks/angular-mocks'
+    'angular-mocks':'../components/angular-mocks/angular-mocks',
+    sigma: '../components/sigma/sigma.min',
   },
   shim: {
     app: {
@@ -55,7 +56,8 @@ require.config({
         deps: [
             'controllers/home',
             'controllers/login',
-            'controllers/users'
+            'controllers/users',
+            'controllers/map'
         ]
     },
 
@@ -80,6 +82,7 @@ require.config({
             'services/http-options',
             'services/auth',
             'services/user',
+            'services/api',
             // 'services/browser-detect',
             // 'services/generic'
         ]
