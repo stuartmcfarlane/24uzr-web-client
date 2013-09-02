@@ -35,17 +35,21 @@
                             <label for="bouy-longitude" class="input-group-addon">longitude</label>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary" ng-click="map.addBouy()" ng-hide="map.isExistingNode()">
-                        <i class="glyphicon-plus icon-white icon-large"></i>
-                        Add
+                    <button type="submit" class="btn btn-primary" ng-click="map.addBouy()" ng-show="map.isAddingNode()">
+                        <!--i class="glyphicon glyphicon-plus icon-white icon-large"></i-->
+                        Save
                     </button>
                     <button type="submit" class="btn btn-primary" ng-click="map.editBouy()" ng-show="map.isExistingNode()">
-                        <i class="glyphicon-plus icon-white icon-large"></i>
-                        Update
+                        <!--i class="glyphicon glyphicon-pencil icon-white icon-large"></i-->
+                        Save
                     </button>
                     <button type="submit" class="btn btn-primary" ng-click="map.onDeselectBouy()" ng-show="map.isExistingNode()">
-                        <i class="glyphicon-plus icon-white icon-large"></i>
+                        <!--i class="glyphicon glyphicon-ban-circle icon-white icon-large"></i-->
                         Deselect
+                    </button>
+                    <button type="submit" class="btn btn-danger" ng-click="map.deleteBouy()" ng-show="map.isExistingNode()">
+                        <!--i class="glyphicon-trash icon-white icon-large"></i-->
+                        Delete
                     </button>
                 </form>
             </div>
@@ -68,12 +72,12 @@
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary" ng-click="map.addDuplexLeg()">
-                        <i class="glyphicon-plus icon-white icon-large"></i>
-                        Add two way
+                        <!--i class="glyphicon glyphicon-resize-horizontal icon-white icon-large"></i-->
+                        One way
                     </button>
                     <button type="submit" class="btn btn-primary" ng-click="map.addSingleLeg()">
-                        <i class="glyphicon-plus icon-white icon-large"></i>
-                        Add one way
+                        <!--i class="glyphicon glyphicon-arrow-right icon-white icon-large"></i-->
+                        Two way
                     </button>
                 </form>
             </div>

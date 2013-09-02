@@ -84,7 +84,28 @@ define(['angular', 'app'],function (angular) {
                 }
                 var def = $q.defer();
 
-                $http.put(makeUrl(api, object._id), object)
+                $http.put(makeUrl(api, object), object)
+                .success(function (res) {
+                    def.resolve(res);
+                }).error(function (err) {
+                    def.reject(err);
+                });
+
+                return def.promise;
+            },
+
+            remove: function (api, object, cb) {
+                console.log('DELETE: ' + makeUrl(api, object));
+                if (typeof cb == 'function') {
+                    return $http.delete(makeUrl(api), object, cb);
+                }
+                var def = $q.defer();
+
+                $http.delete(makeUrl(api, object))
+                // $http({
+                //     method: 'DELETE',
+                //     url: makeUrl(api, object)
+                // })
                 .success(function (res) {
                     def.resolve(res);
                 }).error(function (err) {
