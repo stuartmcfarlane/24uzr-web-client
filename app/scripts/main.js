@@ -7,7 +7,7 @@ require.config({
     underscore: '../components/underscore/underscore',
     ngResource: '../components/angular-resource-unstable/angular-resource',
     'http-auth-interceptor': '../components/angular-http-auth/src/http-auth-interceptor',
-    sigma: '../components/sigma/sigma.min',
+    sigma: '../components/sigma/sigma',
   },
   shim: {
     angular: {

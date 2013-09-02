@@ -77,6 +77,22 @@ define(['angular', 'app'],function (angular) {
 
                 return def.promise;
             },
+
+            update: function (api, object, cb) {
+                if (typeof cb == 'function') {
+                    return $http.put(makeUrl(api), object, cb);
+                }
+                var def = $q.defer();
+
+                $http.put(makeUrl(api, object._id), object)
+                .success(function (res) {
+                    def.resolve(res);
+                }).error(function (err) {
+                    def.reject(err);
+                });
+
+                return def.promise;
+            },
         }
     }]);
 });

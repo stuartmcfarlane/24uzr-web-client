@@ -3,20 +3,13 @@
         <div class="panel panel-default">
             <div class="panel-heading">Map</div>
             <div class="map panel-body">
-                <p>Current bouy:
-                    <span class="label label-default">{{map.currentBouy.name}}</span>
-                    <span ng-show="map.currentBouy.location">
-                        {{map.currentBouy.location.x}}, {{map.currentBouy.location.y}}
-                    </span>
-                    <span ng-hide="map.currentBouy.location || map.currentBouy.name">No bouy selected</span>
-                </p>
                 <div id="sigma-canvas"></div>
             </div>
         </div>
     </div>
     <div class="col-md-4">
         <div class="panel panel-default">
-            <div class="panel-heading">Add a bouy</div>
+            <div class="panel-heading">Bouy</div>
             <div class="functions panel-body">
                 <form class="form-horizontal" role="form">
                     <div class="offset-md-1 col-md-12">
@@ -42,9 +35,17 @@
                             <label for="bouy-longitude" class="input-group-addon">longitude</label>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary" ng-click="map.addBouy()">
+                    <button type="submit" class="btn btn-primary" ng-click="map.addBouy()" ng-hide="map.isExistingNode()">
                         <i class="glyphicon-plus icon-white icon-large"></i>
                         Add
+                    </button>
+                    <button type="submit" class="btn btn-primary" ng-click="map.editBouy()" ng-show="map.isExistingNode()">
+                        <i class="glyphicon-plus icon-white icon-large"></i>
+                        Update
+                    </button>
+                    <button type="submit" class="btn btn-primary" ng-click="map.onDeselectBouy()" ng-show="map.isExistingNode()">
+                        <i class="glyphicon-plus icon-white icon-large"></i>
+                        Deselect
                     </button>
                 </form>
             </div>
@@ -54,21 +55,25 @@
             <div class="functions panel-body">
                     <div class="offset-md-1 col-md-12">
                         <div class="form-group input-group">
-                            <input id="bouy-name" type="text" class="form-control"
-                                placeholder="Name of the bouy"
-                                ng-model="startBouy.name">
+                            <input readonly id="bouy-name" type="text" class="form-control"
+                                placeholder="Select a bouy"
+                                ng-model="map.startBouy.name">
                             <label for="bouy-name" class="input-group-addon">Start Bouy</label>
                         </div>
                         <div class="form-group input-group">
-                            <input id="bouy-name" type="text" class="form-control"
-                                placeholder="Name of the bouy"
-                                ng-model="endBouy.name">
+                            <input readonly id="bouy-name" type="text" class="form-control"
+                                placeholder="Select a bouy"
+                                ng-model="map.endBouy.name">
                             <label for="bouy-name" class="input-group-addon">End Bouy</label>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary" ng-click="map.addLeg()">
+                    <button type="submit" class="btn btn-primary" ng-click="map.addDuplexLeg()">
                         <i class="glyphicon-plus icon-white icon-large"></i>
-                        Add
+                        Add two way
+                    </button>
+                    <button type="submit" class="btn btn-primary" ng-click="map.addSingleLeg()">
+                        <i class="glyphicon-plus icon-white icon-large"></i>
+                        Add one way
                     </button>
                 </form>
             </div>

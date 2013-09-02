@@ -79,6 +79,13 @@ module.exports = function (grunt) {
       ] //groups of documentation to parse
     },
     watch: {
+      less: {
+        files: [
+          '<%= yeoman.app %>/components/bootstrap/less/{,*/}*.less',
+          '<%= yeoman.app %>/styles/less/{,*/}*.less'
+        ],
+        tasks: ['less']
+      },
       livereload: {
         files: [
           '<%= yeoman.app %>/components/bootstrap/{,*/}*.css',
@@ -90,13 +97,6 @@ module.exports = function (grunt) {
           '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
         ],
         tasks: ['livereload']
-      },
-      less: {
-        files: [
-          '<%= yeoman.app %>/components/bootstrap/less/{,*/}*.less',
-          '<%= yeoman.app %>/styles/less/{,*/}*.less'
-        ],
-        tasks: ['less']
       },
     },
     connect: {
