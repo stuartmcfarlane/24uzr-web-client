@@ -369,15 +369,21 @@ define(['app', 'models/bouy', 'models/graph', 'models/edge'], function (app, Bou
         this.currentBouy = undefined;
     };
     
+    MapController.prototype.canAddLeg = function canAddLeg(start, end) {
+        return (0 === this.graph.countEdges(start, end));
+    };
+
     MapController.prototype.addLeg = function addLeg(startBouy, endBouy) {
         if (startBouy && endBouy) {
-            var leg = new Edge();
-            var scope = this.scope;
-            leg.start = startBouy._id;
-            leg.end = endBouy._id;
-            this.apiService.create('legs', leg).then(function(leg){
-                scope.$broadcast('leg:created', leg);
-            });
+            if (this.canAddLeg(this.startBouy, this.endBouy)) { 
+                var leg = new Edge();
+                var scope = this.scope;
+                leg.start = startBouy._id;
+                leg.end = endBouy._id;
+                this.apiService.create('legs', leg).then(function(leg){
+                    scope.$broadcast('leg:created', leg);
+                });
+            }
         }
     };
 

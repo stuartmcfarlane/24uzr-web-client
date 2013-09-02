@@ -34,7 +34,25 @@ define([], function () {
     };
 
     Graph.prototype.addEdge = function addEdge(edge) {
-        this.edges.push(edge);
+        var that = this;
+        if (angular.isArray(edge)) {
+            edge.forEach(function addEdgeElement(edge) {
+                that.addEdge(edge);
+            });
+        }
+        else {
+            this.edges.push(edge);
+        }
+    };
+
+    Graph.prototype.countEdges = function countEdges(start, end) {
+        var count = this.edges.reduce(function countMatchingEdged(count, edge) {
+            if (edge.start === start._id && edge.end === end._id) {
+                return count + 1;
+            }
+            return count;
+        }, 0);
+        return count;
     };
 
     return Graph;
