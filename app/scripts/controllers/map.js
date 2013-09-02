@@ -4,14 +4,12 @@ define(['app', 'models/bouy', 'models/graph', 'models/edge'], function (app, Bou
     function MapController($scope, ApiService) {
         this.graph = new Graph();
         this.currentBouy = new Bouy();
-        this.startBouy = new Bouy();
+        this.startBouy = undefined
         this.endBouy = undefined;
         this.sigma = initSigma();
         this.apiService = ApiService;
         this.scope = $scope;
         var that = this;
-
-        $scope.startBouy = {name: 'test'} ;
 
         function onHoverInBouy(event) {
             console.log('sdm: in', event);
