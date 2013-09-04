@@ -315,8 +315,8 @@ define(['app',
     MapController.prototype.redrawSigma = function redrawSigma() {
         this.drawBouys();
         this.drawLegs();
-        this.drawCurrentLeg();
         this.drawCurrentBouy();
+        this.drawCurrentLeg();
         this.sigma.draw();
     }
 
