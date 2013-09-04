@@ -1,27 +1,27 @@
 define(['app',
+    'settings',
     'models/bouy',
     'models/graph',
     'models/edge',
     'lib/graph-algorithms',
     'lib/graph-algorithms/random-path'],
 
-    function (app, Bouy, Graph, Edge, GraphAlgorithms, RandomPath) {
+    function (app, settings, Bouy, Graph, Edge, GraphAlgorithms, RandomPath) {
     'use strict';
 
     function MapController($scope, ApiService) {
+        this.scope = $scope;
+        var that = this;
+
+        this.apiService = ApiService;
         this.graphAlgorithms = new GraphAlgorithms();
-        this.graph = new Graph({
-            vertexInCardinality: 1,
-            vertexOutCardinality: 1
-        });
+        this.graph = new Graph(settings.graph);
         this.currentBouy = undefined;
         this.startBouy = undefined;
         this.endBouy = undefined;
         this.activePath = undefined;
         this.sigma = initSigma();
-        this.apiService = ApiService;
-        this.scope = $scope;
-        var that = this;
+        addEvents(this.sigma);
 
         function onHoverInBouy(event) {
         }
@@ -42,8 +42,6 @@ define(['app',
             sigmaInst.bind('outnodes', onHoverOutBouy);
             sigmaInst.bind('upnodes', onClickBouy);
         }
-
-        addEvents(this.sigma);
 
         this.onBouysLoaded = function onBouysLoaded(event, bouys) {
             if (!angular.isArray(bouys)) {
@@ -161,26 +159,10 @@ define(['app',
         function initSigma() {
             var sigRoot = document.getElementById('sigma-canvas');
             var sigmaInst = sigma.init(sigRoot);
-            sigmaInst.drawingProperties({
-                borderSize: 5,
-                arrowRatio: 100,
-                defaultLabelColor: '#ddd',
-                defaultLabelSize: 14,
-                defaultLabelBGColor: '#ddd',
-                defaultLabelHoverColor: '#000',
-                labelThreshold: 6,
-                defaultEdgeType: 'line',
-                defaultEdgeArrow: 'target',
-            }).graphProperties({
-                arrowDisplaySize: 10,
-                sideMargin: 20,
-                minNodeSize: 0.5,
-                maxNodeSize: 5,
-                minEdgeSize: 1,
-                maxEdgeSize: 1,
-            }).mouseProperties({
-                maxRatio: 32
-            });
+            sigmaInst
+            .drawingProperties(settings.sigma.drawingProperties)
+            .graphProperties(settings.sigma.graphProperties)
+            .mouseProperties(settings.sigma.mouseProperties);
             return sigmaInst;
         }
 
@@ -197,11 +179,12 @@ define(['app',
                 });
             }
             else {
-                this.sigma.addNode(bouys._id,{
-                    label: bouys.name,
-                    color: '#00ff00',
-                    x: bouys.location.x,
-                    y: bouys.location.y
+                var bouy = bouys;
+                this.sigma.addNode(bouy._id,{
+                    label: bouy.name,
+                    color: bouy.color || settings.graph.defaultVertexColor,
+                    x: bouy.location.x,
+                    y: bouy.location.y
                 });
             }
         }
@@ -220,7 +203,7 @@ define(['app',
             var bouy = bouys;
             this.sigma.iterNodes(function updateNode(node) {
                 node.label = bouy.name;
-                node.color = '#00ff00';
+                node.color = bouy.color || settings.graph.defaultVertexColor;
                 node.x = bouy.location.x;
                 node.y = bouy.location.y;
             }, [
@@ -273,19 +256,46 @@ define(['app',
         }
     };
 
-    MapController.prototype.showCurrentLeg = function showCurrentLeg(node) {
+    MapController.prototype.drawBouys = function drawBouys() {
+        var bouys = this.graph.vertices.map(function getId(bouy) {
+            return bouy._id;
+        });
+        try {
+            this.sigma.iterNodes(function setBouyProperties(node) {
+                node.color = settings.graph.defaultBouyColor;
+                node.size = settings.graph.defaultBouySize;
+            }, bouys);
+        }
+        catch (error) {
+        }
+    };
+    
+    MapController.prototype.drawLegs = function drawLegs() {
+        var legs = this.graph.edges.map(function getId(leg) {
+            return leg._id;
+        });
+        try {
+            this.sigma.iterEdges(function setLegProperties(node) {
+                node.color = settings.graph.defaultLegColor;
+            }, legs);
+        }
+        catch (error) {
+        }
+    };
+
+    MapController.prototype.drawCurrentLeg = function drawCurrentLeg() {
         this.sigma.dropEdge('currentLeg');
         try {
-            if (this.startBouy && this.endBouy) {
-                this.sigma.addEdge('currentLeg', this.startBouy._id, this.endBouy._id);
-                this.sigma.iterEdges(function(edge) {
-                    edge.color = '#ff0';
-                }, ['currentLeg']);
+            if (this.startBouy) {
                 this.sigma.iterNodes(function(node) {
-                    node.color = '#0f0';
+                    node.color = settings.graph.startBouyColor;
+                    node.size = settings.graph.startBouySize;
                 }, [this.startBouy._id]);
+            }
+            if (this.endBouy) {
                 this.sigma.iterNodes(function(node) {
-                    node.color = '#f00';
+                    node.color = settings.graph.endBouyColor;
+                    node.size = settings.graph.endBouySize;
                 }, [this.endBouy._id]);
             }
         }
@@ -293,24 +303,20 @@ define(['app',
         }
     };
 
-    MapController.prototype.showCurrentBouy = function showCurrentBouy() {
-        var currentBouyId = this.currentBouy && this.currentBouy._id;
-        this.sigma.iterNodes(function highlightCurrentBouy (node) {
-            if (node.id === currentBouyId) {
-                node.color = '#ff0';
-            }
-            else {
-                node.color = '#0f0';
-            }
-        });
+    MapController.prototype.drawCurrentBouy = function drawCurrentBouy() {
+        if (this.currentBouy) {
+            this.sigma.iterNodes(function highlightCurrentBouy (node) {
+                node.color = settings.graph.currentBouyColor;
+                node.size = settings.graph.currentBouySize;
+            }, [this.currentBouy._id]);
+        }
     };
 
     MapController.prototype.redrawSigma = function redrawSigma() {
-        this.showCurrentLeg();
-        this.showCurrentBouy();
-        this.sigma.iterEdges(function setArrowSizes (edge) {
-            edge.arrowDisplaySize = 50;
-        })
+        this.drawBouys();
+        this.drawLegs();
+        this.drawCurrentLeg();
+        this.drawCurrentBouy();
         this.sigma.draw();
     }
 
@@ -450,26 +456,32 @@ define(['app',
         var sigma = this.sigma;
         if (this.activePath) {
             this.activePath.edges.forEach(function removeActivePathEdge(edge) {
-                sigma.dropEdge('activePath.' + edge._id);
+                sigma.dropEdge(edge._id);
             });
         }
         this.activePath = path;
-        var nextId = 0;
-        this.activePath.edges.forEach(function removeActivePathEdge(edge) {
-            edge._id = 'activePath.' + (++nextId);
-        });
-        this.addEdgeToSigma(this.activePath.edges);
-        var activePathIds = this.activePath.edges.map(function getIds(edge) {
-            return edge._id;
-        });
-        this.sigma.iterEdges(function activeEdgesBlue(edge) {
-            edge.color = '#00d';
-        }, activePathIds);
+        if (this.activePath) {
+            var nextId = 0;
+            this.activePath.edges.forEach(function removeActivePathEdge(edge) {
+                edge._id = 'activePath.' + (++nextId);
+            });
+            this.addEdgeToSigma(this.activePath.edges);
+            var activePathIds = this.activePath.edges.map(function getIds(edge) {
+                return edge._id;
+            });
+            this.sigma.iterEdges(function activeEdgesBlue(edge) {
+                edge.color = settings.graph.activePathColor;
+            }, activePathIds);
+        }
         this.redrawSigma();
     };
 
     MapController.prototype.onRandomPath = function onRandomPath() {
         this.setActivePath(this.graphAlgorithms.randomPath(this.graph, this.startBouy, this.endBouy));
+    };
+
+    MapController.prototype.onClearPath = function onClearPath() {
+        this.setActivePath();
     };
 
     app.controller('Map', ['$scope', 'ApiService', MapController]);

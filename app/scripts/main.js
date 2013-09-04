@@ -36,6 +36,7 @@ require([
     // Config
     'routes',
     'config',
+    'settings',
 
     // Lib
     'lib/graph-algorithms',
