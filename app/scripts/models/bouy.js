@@ -1,9 +1,12 @@
-define(['models/point'], function (Point) {
+define(['underscore'], function () {
     'use strict';
 
-    function Bouy (name, location) {
-        this.location = location;
-        this.name = name;
+    function Bouy (vertex) {
+        if (vertex) {
+            this._id = vertex._id;
+            this.name = vertex.name;
+            this.location = vertex.location;
+        }
     };
 
     return Bouy;

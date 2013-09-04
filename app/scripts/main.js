@@ -37,10 +37,15 @@ require([
     'routes',
     'config',
 
+    // Lib
+    'lib/graph-algorithms',
+    'lib/graph-algorithms/random-path',
+
     // Models
     'models/point',
     'models/edge',
     'models/graph',
+    'models/path',
     'models/bouy',
 
     // Controllers
