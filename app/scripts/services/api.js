@@ -22,6 +22,7 @@ define(['angular', 'app'],function (angular) {
         return {
 
             get: function (api, id) {
+                console.log('get:' + api, arguments[1]);
                 var def = $q.defer();
 
                 if (typeof id === 'object') {
@@ -30,6 +31,7 @@ define(['angular', 'app'],function (angular) {
 
                 $http.get(makeUrl(api))
                 .success(function (res) {
+                    console.log('<get', res);
                     def.resolve(res);
                 }).error(function (err) {
                     def.reject(err);
@@ -39,6 +41,7 @@ define(['angular', 'app'],function (angular) {
             },
 
             query: function (api, id, cb) {
+                console.log('query:' + api, arguments[1]);
                 if (cb === undefined && typeof id === 'function') {
                     cb = id;
                     id = undefined;
@@ -54,6 +57,7 @@ define(['angular', 'app'],function (angular) {
 
                 $http.get(makeUrl(api, id))
                 .success(function (res) {
+                    console.log('<query', res);
                     def.resolve(res);
                 }).error(function (err) {
                     def.reject(err);
@@ -63,6 +67,7 @@ define(['angular', 'app'],function (angular) {
             },
 
             create: function (api, object, cb) {
+                console.log('create:' + api, arguments[1]);
                 if (typeof cb == 'function') {
                     return $http.post(makeUrl(api), object, cb);
                 }
@@ -70,6 +75,7 @@ define(['angular', 'app'],function (angular) {
 
                 $http.post(makeUrl(api), object)
                 .success(function (res) {
+                    console.log('<post', res);
                     def.resolve(res);
                 }).error(function (err) {
                     def.reject(err);
@@ -79,6 +85,7 @@ define(['angular', 'app'],function (angular) {
             },
 
             update: function (api, object, cb) {
+                console.log('update:' + api, arguments[1]);
                 if (typeof cb == 'function') {
                     return $http.put(makeUrl(api), object, cb);
                 }
@@ -86,6 +93,7 @@ define(['angular', 'app'],function (angular) {
 
                 $http.put(makeUrl(api, object), object)
                 .success(function (res) {
+                    console.log('<put', res);
                     def.resolve(res);
                 }).error(function (err) {
                     def.reject(err);
@@ -95,6 +103,7 @@ define(['angular', 'app'],function (angular) {
             },
 
             remove: function (api, object, cb) {
+                console.log('remove:' + api, arguments[1]);
                 console.log('DELETE: ' + makeUrl(api, object));
                 if (typeof cb == 'function') {
                     return $http.delete(makeUrl(api), object, cb);
@@ -107,6 +116,7 @@ define(['angular', 'app'],function (angular) {
                 //     url: makeUrl(api, object)
                 // })
                 .success(function (res) {
+                    console.log('<remove', res);
                     def.resolve(res);
                 }).error(function (err) {
                     def.reject(err);

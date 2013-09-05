@@ -17,37 +17,37 @@
                             <input id="bouy-name" type="text" class="form-control"
                                 placeholder="Name of the bouy"
                                 tabindex="1"
-                                ng-model="map.currentBouy.name">
+                                ng-model="map.active.bouy.name">
                             <label for="bouy-name" class="input-group-addon">name</label>
                         </div>
                         <div class="form-group input-group">
                             <input id="bouy-latitude" type="text" class="form-control"
                                 tabindex="2"
                                 placeholder="Latitude of the bouy"
-                                ng-model="map.currentBouy.location.x">
+                                ng-model="map.active.bouy.location.x">
                             <label for="bouy-latitude" class="input-group-addon">latitude</label>
                         </div>
                         <div class="form-group input-group">
                             <input id="bouy-longitude" type="text" class="form-control"
                                 tabindex="3"
                                 placeholder="Longitude of the bouy"
-                                ng-model="map.currentBouy.location.y">
+                                ng-model="map.active.bouy.location.y">
                             <label for="bouy-longitude" class="input-group-addon">longitude</label>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary" ng-click="map.addBouy()" ng-show="map.isAddingNode()">
+                    <button type="submit" class="btn btn-primary" ng-click="map.onAddBouyPressed()" ng-show="map.isAddingNode()">
                         <!--i class="glyphicon glyphicon-plus icon-white icon-large"></i-->
                         Save
                     </button>
-                    <button type="submit" class="btn btn-primary" ng-click="map.editBouy()" ng-show="map.isExistingNode()">
+                    <button type="submit" class="btn btn-primary" ng-click="map.onEditBouyPressed()" ng-show="map.isExistingNode()">
                         <!--i class="glyphicon glyphicon-pencil icon-white icon-large"></i-->
                         Save
                     </button>
-                    <button type="submit" class="btn btn-primary" ng-click="map.onDeselectBouy()" ng-show="map.isExistingNode()">
+                    <button type="submit" class="btn btn-primary" ng-click="map.onDeselectBouyPressed()" ng-show="map.isExistingNode()">
                         <!--i class="glyphicon glyphicon-ban-circle icon-white icon-large"></i-->
                         Deselect
                     </button>
-                    <button type="submit" class="btn btn-danger" ng-click="map.deleteBouy()" ng-show="map.isExistingNode()">
+                    <button type="submit" class="btn btn-danger" ng-click="map.onDeleteBouyPressed()" ng-show="map.isExistingNode()">
                         <!--i class="glyphicon-trash icon-white icon-large"></i-->
                         Delete
                     </button>
@@ -61,21 +61,21 @@
                         <div class="form-group input-group">
                             <input readonly id="bouy-name" type="text" class="form-control"
                                 placeholder="Select a bouy"
-                                ng-model="map.startBouy.name">
+                                ng-model="map.active.leg.start.name">
                             <label for="bouy-name" class="input-group-addon">Start Bouy</label>
                         </div>
                         <div class="form-group input-group">
                             <input readonly id="bouy-name" type="text" class="form-control"
                                 placeholder="Select a bouy"
-                                ng-model="map.endBouy.name">
+                                ng-model="map.active.leg.end.name">
                             <label for="bouy-name" class="input-group-addon">End Bouy</label>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary" ng-click="map.addSingleLeg()">
+                    <button type="submit" class="btn btn-primary" ng-click="map.onAddSingleLegPressed()">
                         <!--i class="glyphicon glyphicon-arrow-right icon-white icon-large"></i-->
                         One way
                     </button>
-                    <button type="submit" class="btn btn-primary" ng-click="map.addDuplexLeg()">
+                    <button type="submit" class="btn btn-primary" ng-click="map.onAddDuplexLegPressed()">
                         <!--i class="glyphicon glyphicon-resize-horizontal icon-white icon-large"></i-->
                         Two way
                     </button>
@@ -89,21 +89,21 @@
                         <div class="form-group input-group">
                             <input readonly id="bouy-name" type="text" class="form-control"
                                 placeholder="Select a bouy"
-                                ng-model="map.startBouy.name">
+                                ng-model="map.active.leg.start.name">
                             <label for="bouy-name" class="input-group-addon">Start Bouy</label>
                         </div>
                         <div class="form-group input-group">
                             <input readonly id="bouy-name" type="text" class="form-control"
                                 placeholder="Select a bouy"
-                                ng-model="map.endBouy.name">
+                                ng-model="map.active.leg.end.name">
                             <label for="bouy-name" class="input-group-addon">End Bouy</label>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary" ng-click="map.onRandomPath()">
+                    <button type="submit" class="btn btn-primary" ng-click="map.onRandomPathPressed()">
                         <!--i class="glyphicon glyphicon-resize-horizontal icon-white icon-large"></i-->
                         Random
                     </button>
-                    <button type="submit" class="btn btn-warning" ng-click="map.onClearPath()">
+                    <button type="submit" class="btn btn-warning" ng-click="map.onClearPathPressed()">
                         <!--i class="glyphicon glyphicon-resize-horizontal icon-white icon-large"></i-->
                         Clear
                     </button>

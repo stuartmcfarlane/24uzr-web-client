@@ -39,6 +39,7 @@ require([
     'settings',
 
     // Lib
+    'lib/graph-adapter',
     'lib/graph-algorithms',
     'lib/graph-algorithms/random-path',
 

@@ -1,5 +1,9 @@
 define([], function() {
     return {
+        graphAdapter: {
+            target: 'sigma-canvas'
+        },
+
         graph: {
             vertexInCardinality: 1,
             vertexOutCardinality: 1,

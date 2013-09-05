@@ -1,136 +1,51 @@
+/* Map Editor controller
+ *
+ * Directs map cntrolls to the graphAdapter which handles the drawing.
+ * Creation of bouys and legs are submitted to the apiService from this
+ * controller and on success are passed on to the graphAdapter for
+ * rendering.
+ *
+ * All user interaction with sigma is handled by the graphAdapter and
+ * routed back to this controller by way of events.
+ *
+ * TODO
+ * User actions on the graph are first applied to the graphAdapter and
+ * then persisted. This maintains the illusion of speed (even if it is
+ * fast)
+ *
+ */
+
 define(['app',
     'settings',
+    'lib/graph-adapter',
     'models/bouy',
     'models/graph',
     'models/edge',
-    'lib/graph-algorithms',
-    'lib/graph-algorithms/random-path'],
+    'lib/graph-algorithms'],
 
-    function (app, settings, Bouy, Graph, Edge, GraphAlgorithms, RandomPath) {
+    function (app, settings, GraphAdapter, Bouy, Graph, Edge, GraphAlgorithms) {
     'use strict';
 
-    function MapController($scope, ApiService) {
+    function MapController($scope, ApiService, $q) {
         this.scope = $scope;
-        var that = this;
+        this.$q = $q;
 
         this.apiService = ApiService;
+        this.graphAdapter = new GraphAdapter();
         this.graphAlgorithms = new GraphAlgorithms();
         this.graph = new Graph(settings.graph);
-        this.currentBouy = undefined;
-        this.startBouy = undefined;
-        this.endBouy = undefined;
-        this.activePath = undefined;
-        this.sigma = initSigma();
-        addEvents(this.sigma);
 
-        function onHoverInBouy(event) {
-        }
-
-        function onHoverOutBouy(event) {
-        }
-        
-        function onClickBouy(event) {
-            var node;
-            event.target.iterNodes(function(n){
-                node = n;
-            },[event.content[0]]);
-            that.onBouySelected(node);
-        }
-        
-        function addEvents(sigmaInst) {
-            sigmaInst.bind('overnodes', onHoverInBouy);
-            sigmaInst.bind('outnodes', onHoverOutBouy);
-            sigmaInst.bind('upnodes', onClickBouy);
-        }
-
-        this.onBouysLoaded = function onBouysLoaded(event, bouys) {
-            if (!angular.isArray(bouys)) {
-                bouys = [bouys];
-            }
-            bouys = bouys.map(function constructBouys(bouy) {
-                return new Bouy(bouy);
-            });
-            that.graph.addVertex(bouys);
-            that.addVertexToSigma(bouys);
-            that.redrawSigma();
+        this.active = {
+            bouy: undefined,
+            leg: undefined,
+            path: undefined
         };
 
-        this.onBouysCreated = function onBouysCreated(event, bouys) {
-            if (!angular.isArray(bouys)) {
-                bouys = [bouys];
-            }
-            bouys = bouys.map(function constructBouys(bouy) {
-                return new Bouy(bouy);
-            });
-            that.graph.addVertex(bouys);
-            that.addVertexToSigma(bouys);
-            that.redrawSigma();
-        };
-
-        this.onBouysUpdated = function onBouysUpdated(event, bouys) {
-            if (!angular.isArray(bouys)) {
-                bouys = [bouys];
-            }
-            bouys = bouys.map(function constructBouys(bouys) {
-                return new Bouy(bouy);
-            });
-            that.updateVertexToSigma(bouys);
-            that.redrawSigma();
-        };
-
-        this.onBouysDeleted = function onBouysDeleted(event, bouys) {
-            if (!angular.isArray(bouys)) {
-                bouys = [bouys];
-            }
-            bouys = bouys.map(function constructBouys(bouys) {
-                return new Bouy(bouy);
-            });
-            that.sigma.emptyGraph();
-            that.apiService.query('bouies')
-            .then(function bouysQuerySuccess(bouys) {
-                $scope.$broadcast('bouy:queried', bouys);
-            });
-
-            that.apiService.query('legs')
-            .then(function legsQuerySuccess(legs) {
-                $scope.$broadcast('leg:queried', legs);
-            });
-
-        };
-
-        this.onLegsLoaded = function onLegsLoaded(event, legs) {
-            if (!angular.isArray(legs)) {
-                legs = [legs];
-            }
-            var graph = that.graph;
-            legs = legs.map(function constructEdges(leg) {
-                leg.start = graph.findVertexById(leg.start);
-                leg.end = graph.findVertexById(leg.end);
-                return new Edge(leg);
-            });
-            that.graph.addEdge(legs);
-            that.addEdgeToSigma(legs);
-            that.redrawSigma();
-        };
-
-        this.onLegsCreated = function onLegsCreated(event, legs) {
-            if (!angular.isArray(legs)) {
-                legs = [legs];
-            }
-            var graph = that.graph;
-            legs = legs.map(function constructEdges(leg) {
-                leg.start = graph.findVertexById(leg.start);
-                leg.end = graph.findVertexById(leg.end);
-                return new Edge(leg);
-            });
-            that.graph.addEdge(legs);
-            that.addEdgeToSigma(legs);
-            that.redrawSigma();
-        };
-
-        this.onLegDeleted = function onLegDeleted(event, leg) {
-            console.log('LegDeleted', leg);
-        };
+        this.graphAdapter.setGraph(this.graph);
+        this.graphAdapter.setActive(this.active);
+        this.graphAdapter.registerEventHandlers(this, {
+            onBouySelected: this.onBouySelected
+        });
 
         $scope.$on('bouy:queried', this.onBouysLoaded);
         $scope.$on('bouy:created', this.onBouysCreated);
@@ -150,180 +65,27 @@ define(['app',
             $scope.$broadcast('leg:queried', legs);
         });
 
-        function initSigma() {
-            var sigRoot = document.getElementById('sigma-canvas');
-            var sigmaInst = sigma.init(sigRoot);
-            sigmaInst
-            .drawingProperties(settings.sigma.drawingProperties)
-            .graphProperties(settings.sigma.graphProperties)
-            .mouseProperties(settings.sigma.mouseProperties);
-            return sigmaInst;
-        }
-
         $scope.map = this;
         this.fixFocus();
     }
 
-    MapController.prototype.addVertexToSigma = function addVertexToSigma(bouys) {
-        try {
-            if (angular.isArray(bouys)) {
-                var that = this;
-                bouys.forEach(function(bouy){
-                    that.addVertexToSigma.call(that, bouy);
-                });
-            }
-            else {
-                var bouy = bouys;
-                this.sigma.addNode(bouy._id,{
-                    label: bouy.name,
-                    color: bouy.color || settings.graph.defaultVertexColor,
-                    x: bouy.location.x,
-                    y: bouy.location.y
-                });
-            }
-        }
-        catch(error) {
-        }
-    };
+    // graphAdapter events
 
-    MapController.prototype.updateVertexToSigma = function updateVertexToSigma(bouys) {
-        if (angular.isArray(bouys)) {
-            var that = this;
-            bouys.forEach(function(bouy){
-                that.updateVertexFromSigma.call(that, bouy);
-            });
-        }
-        else {
-            var bouy = bouys;
-            this.sigma.iterNodes(function updateNode(node) {
-                node.label = bouy.name;
-                node.color = bouy.color || settings.graph.defaultVertexColor;
-                node.x = bouy.location.x;
-                node.y = bouy.location.y;
-            }, [
-                bouy._id
-            ]);
-        }
-    };
+    MapController.prototype.onActiveBouyChanged = function onActiveBouyChanged() {
+        console.log('onActiveBouyChanged');
+    }
 
-    MapController.prototype.removeEdgeFromSigma = function removeEdgeFromSigma(legs) {
-        if (angular.isArray(legs)) {
-            var that = this;
-            legs.forEach(function(leg){
-                that.removeEdgeFromSigma.call(that, leg);
-            });
-        }
-        else {
-            var leg = legs;
-            this.sigma.dropEdge(leg._id);
-        }
-    };
+    MapController.prototype.onActiveLegChanged = function onActiveLegChanged() {
+        console.log('onActiveLegChanged');
+    }
 
-    MapController.prototype.addEdgeToSigma = function addEdgeToSigma(legs) {
-        try {
-            if (angular.isArray(legs)) {
-                var that = this;
-                legs.forEach(function(leg){
-                    that.addEdgeToSigma.call(that, leg);
-                });
-            }
-            else {
-                var leg = legs;
-                this.sigma.addEdge(leg._id, leg.start._id, leg.end._id);
-            }
-        }
-        catch (error) {
-        }
-    };
+    // button events
 
-    MapController.prototype.removeVertexFromSigma = function removeVertexFromSigma(bouys) {
-        if (angular.isArray(bouys)) {
-            var that = this;
-            bouys.forEach(function(bouy){
-                that.removeVertexToSigma.call(that, bouy);
-            });
-        }
-        else {
-            var bouy = bouys;
-            this.sigma.dropNode(bouy._id);
-        }
-    };
-
-    MapController.prototype.drawBouys = function drawBouys() {
-        var bouys = this.graph.vertices.map(function getId(bouy) {
-            return bouy._id;
-        });
-        try {
-            this.sigma.iterNodes(function setBouyProperties(node) {
-                node.color = settings.graph.defaultBouyColor;
-                node.size = settings.graph.defaultBouySize;
-            }, bouys);
-        }
-        catch (error) {
-        }
-    };
-    
-    MapController.prototype.drawLegs = function drawLegs() {
-        var legs = this.graph.edges.map(function getId(leg) {
-            return leg._id;
-        });
-        try {
-            this.sigma.iterEdges(function setLegProperties(node) {
-                node.color = settings.graph.defaultLegColor;
-            }, legs);
-        }
-        catch (error) {
-        }
-    };
-
-    MapController.prototype.drawCurrentLeg = function drawCurrentLeg() {
-        this.sigma.dropEdge('currentLeg');
-        try {
-            if (this.startBouy) {
-                this.sigma.iterNodes(function(node) {
-                    node.color = settings.graph.startBouyColor;
-                    node.size = settings.graph.startBouySize;
-                }, [this.startBouy._id]);
-            }
-            if (this.endBouy) {
-                this.sigma.iterNodes(function(node) {
-                    node.color = settings.graph.endBouyColor;
-                    node.size = settings.graph.endBouySize;
-                }, [this.endBouy._id]);
-            }
-        }
-        catch (error) {
-        }
-    };
-
-    MapController.prototype.drawCurrentBouy = function drawCurrentBouy() {
-        if (this.currentBouy) {
-            this.sigma.iterNodes(function highlightCurrentBouy (node) {
-                node.color = settings.graph.currentBouyColor;
-                node.size = settings.graph.currentBouySize;
-            }, [this.currentBouy._id]);
-        }
-    };
-
-    MapController.prototype.redrawSigma = function redrawSigma() {
-        this.drawBouys();
-        this.drawLegs();
-        this.drawCurrentBouy();
-        this.drawCurrentLeg();
-        this.sigma.draw();
-    };
-
-    MapController.prototype.fixFocus = function fixFocus() {
-        var bouyName = document.getElementById('bouy-name');
-        if (bouyName) {
-            bouyName.focus();
-        }
-    };
-
-    MapController.prototype.addBouy = function addBouy(bouy) {
+    MapController.prototype.onAddBouyPressed = function onAddBouyPressed(bouy) {
+        console.log('onAddBouyPressed', bouy);
         if (bouy === undefined) {
-            bouy = this.currentBouy;
-            this.currentBouy = undefined;
+            bouy = this.active.bouy;
+            this.graphAdapter.setActiveBouy(undefined);
         }
         var scope = this.scope;
         this.apiService.create('bouies', bouy).then(function(bouy) {
@@ -332,27 +94,24 @@ define(['app',
         this.fixFocus();
     };
 
-    MapController.prototype.isExistingNode = function isExistingNode(node) {
-        var id = node && node.id || this.currentBouy && this.currentBouy._id || undefined;
-        return !!this.graph.findVertexById(id);
+    MapController.prototype.onRandomPathPressed = function onRandomPathPressed() {
+        console.log('onRandomPathPressed');
+        this.graphAdapter.setActivePath(
+            this.graphAlgorithms.randomPath(
+                this.graph,
+                this.active.leg.start,
+                this.active.leg.end));
     };
 
-    MapController.prototype.isAddingNode = function isAddingNode() {
-        return (this.currentBouy !== undefined &&
-            !this.isExistingNode(this.currentBouy) &&
-            this.currentBouy.name !== undefined &&
-            /[^\s]/.test(this.currentBouy.name) &&
-            this.currentBouy.location !== undefined &&
-            this.currentBouy.location.x !== undefined &&
-            /[^\s]/.test(this.currentBouy.location.x) &&
-            this.currentBouy.location.y !== undefined &&
-            /[^\s]/.test(this.currentBouy.location.y)
-        );
+    MapController.prototype.onClearPathPressed = function onClearPathPressed() {
+        console.log('onClearPathPressed');
+        this.graphAdapter.setActivePath();
     };
 
-    MapController.prototype.editBouy = function editBouy(bouy) {
+    MapController.prototype.onEditBouyPressed = function onEditBouyPressed(bouy) {
+        console.log('onEditBouyPressed', bouy);
         if (bouy === undefined) {
-            bouy = this.currentBouy;
+            bouy = this.active.bouy;
         }
         var scope = this.scope;
         this.apiService.update('bouies', bouy).then(function(bouy) {
@@ -361,69 +120,186 @@ define(['app',
         this.fixFocus();
     };
 
-    MapController.prototype.deleteBouy = function editBouy(bouy) {
-        if (bouy === undefined) {
-            bouy = this.currentBouy;
-            this.currentBouy = undefined;
-            if (this.startBouy === bouy) {
-                this.startBouy = undefined;
-            }
-            if (this.endBouy === bouy) {
-                this.endBouy = undefined;
-            }
-        }
-        var scope = this.scope;
-        var apiService = this.apiService;
-        var deletionPromises = [];
-        this.sigma.iterEdges(function edgesOfNode(edge) {
-            if (edge.id !== 'currentLeg' && ( edge.source === bouy._id || edge.target === bouy._id )) {
-                deletionPromises.push(
-                    apiService.remove('legs', edge.id)
-                    .then(function legDeleted (leg) {
-                        scope.$broadcast('leg:deleted', leg);
-                    })
-                );
-            }
-        });
-        deletionPromises.push(
-            apiService.remove('bouies', bouy._id)
-            .then(function bouyDeleted (bouy) {
-                scope.$broadcast('bouy:deleted', bouy);
-            })
-        );
+    MapController.prototype.onDeleteBouyPressed = function onDeleteBouyPressed() {
+        var bouy = this.active.bouy;
+        console.log('onDeleteBouyPressed', bouy);
+        if (bouy) {
+            var toAndFrom = this.graph.getEdgesToAndFrom(bouy);
+            var scope = this.scope;
+            var apiService = this.apiService;
 
+            this.graphAdapter.setActiveBouy(undefined);
+            this.graphAdapter.removeLeg(toAndFrom);
+            this.graphAdapter.removeBouy(bouy);
+            this.graphAdapter.redraw();
+            
+            toAndFrom.forEach(function removeLinkedEdges(edge) {
+                apiService.remove('legs', edge._id)
+                .then(function() {
+                    scope.$broadcast('leg:deleted', edge);
+                });
+            });
+            apiService.remove('bouies', bouy._id)
+            .then(function() {
+                scope.$broadcast('bouy:deleted', bouy);
+            });
+
+            this.fixFocus();
+        }
+    };
+
+    MapController.prototype.onDeselectBouyPressed = function onDeselectBouyPressed() {
+        console.log('onDeselectBouyPressed');
+        this.active.bouy = undefined;
         this.fixFocus();
     };
+    
+    MapController.prototype.onAddSingleLegPressed = function onAddSingleLegPressed() {
+        console.log('onAddSingleLegPressed');
+        this.addLeg(this.active.leg.start, this.active.leg.end);
+    };
 
-    MapController.prototype.setLegBouys = function setLegBouys(node) {
-        if (node && (!this.endBouy || node.id !== this.endBouy._id)) {
-            this.startBouy = this.endBouy;
-            this.endBouy = this.graph.findVertexById(node.id);
+    MapController.prototype.onAddDuplexLegPressed = function onAddDuplexLegPressed() {
+        console.log('onAddDuplexLegPressed');
+        this.addLeg(this.active.leg.start, this.active.leg.end);
+        this.addLeg(this.active.leg.end, this.active.leg.start);
+    };
+
+    // button state helpers
+
+    MapController.prototype.isExistingNode = function isExistingNode(node) {
+        console.log('isExistingNode', node);
+        var id = node && node.id || this.active.bouy && this.active.bouy._id || undefined;
+        return !!this.graph.findVertexById(id);
+    };
+
+    MapController.prototype.isAddingNode = function isAddingNode() {
+        console.log('isAddingNode');
+        return (this.active.bouy !== undefined &&
+            !this.isExistingNode(this.active.bouy) &&
+            this.active.bouy.name !== undefined &&
+            /[^\s]/.test(this.active.bouy.name) &&
+            this.active.bouy.location !== undefined &&
+            this.active.bouy.location.x !== undefined &&
+            /[^\s]/.test(this.active.bouy.location.x) &&
+            this.active.bouy.location.y !== undefined &&
+            /[^\s]/.test(this.active.bouy.location.y)
+        );
+    };
+
+
+    // api completion events
+
+    MapController.prototype.onBouysLoaded = function onBouysLoaded(event, bouys) {
+        console.log('onBouysLoaded', event, bouys);
+        var map = event.currentScope.map;
+        if (!angular.isArray(bouys)) {
+            bouys = [bouys];
+        }
+        bouys = bouys.map(function constructBouys(bouy) {
+            return new Bouy(bouy);
+        });
+        map.graph.addVertex(bouys);
+        map.graphAdapter.addBouy(bouys);
+        map.graphAdapter.redraw();
+    };
+
+    MapController.prototype.onBouysCreated = function onBouysCreated(event, bouys) {
+        console.log('onBouysCreated', event, bouys);
+        var map = event.currentScope.map;
+        if (!angular.isArray(bouys)) {
+            bouys = [bouys];
+        }
+        bouys = bouys.map(function constructBouys(bouy) {
+            return new Bouy(bouy);
+        });
+        map.graph.addVertex(bouys);
+        map.graphAdapter.addBouy(bouys);
+        map.graphAdapter.redraw();
+    };
+
+    MapController.prototype.onBouysUpdated = function onBouysUpdated(event, bouys) {
+        console.log('onBouysUpdated', event, bouys);
+        var map = event.currentScope.map;
+        if (!angular.isArray(bouys)) {
+            bouys = [bouys];
+        }
+        bouys = bouys.map(function constructBouys(bouy) {
+            return new Bouy(bouy);
+        });
+        map.graphAdapter.updateBouy(bouys);
+        map.graphAdapter.redraw();
+    };
+
+    MapController.prototype.onBouysDeleted = function onBouysDeleted(event, bouys) {
+        console.log('onBouysDeleted', event, bouys);
+    };
+
+    MapController.prototype.onLegsLoaded = function onLegsLoaded(event, legs) {
+        console.log('onLegsLoaded', event, legs);
+        var map = event.currentScope.map;
+        if (!angular.isArray(legs)) {
+            legs = [legs];
+        }
+        var graph = map.graph;
+        legs = legs.map(function constructEdges(leg) {
+            leg.start = graph.findVertexById(leg.start);
+            leg.end = graph.findVertexById(leg.end);
+            return new Edge(leg);
+        });
+        map.graph.addEdge(legs);
+        map.graphAdapter.addLeg(legs);
+        map.graphAdapter.redraw();
+    };
+
+    MapController.prototype.onLegsCreated = function onLegsCreated(event, legs) {
+        console.log('onLegsCreated', event, legs);
+        var map = event.currentScope.map;
+        if (!angular.isArray(legs)) {
+            legs = [legs];
+        }
+        var graph = map.graph;
+        legs = legs.map(function constructEdges(leg) {
+            leg.start = graph.findVertexById(leg.start);
+            leg.end = graph.findVertexById(leg.end);
+            return new Edge(leg);
+        });
+        map.graph.addEdge(legs);
+        map.graphAdapter.addLeg(legs);
+        map.graphAdapter.redraw();
+    };
+
+    MapController.prototype.onLegsDeleted = function onLegsDeleted(event, legs) {
+        console.log('onLegsDeleted', event, legs);
+    };
+
+    MapController.prototype.fixFocus = function fixFocus() {
+        console.log('fixFocus');
+        var bouyName = document.getElementById('bouy-name');
+        if (bouyName) {
+            bouyName.focus();
         }
     };
 
-    MapController.prototype.setCurrentBouy = function setCurrentBouy(node) {
-        this.currentBouy = this.graph.findVertexById(node.id);
-    };
+    // graph adapter events
 
-    MapController.prototype.onBouySelected = function onBouySelected(node) {
-        this.setLegBouys(node);
-        this.setCurrentBouy(node);
-        this.redrawSigma();
+    MapController.prototype.onBouySelected = function onBouySelected(bouy) {
+        console.log('onBouySelected', bouy);
+        this.graphAdapter.redraw();
         this.scope.$apply();
     };
 
-    MapController.prototype.onDeselectBouy = function onDeselectBouy() {
-        this.currentBouy = undefined;
-    };
-    
+    // helpers
+
     MapController.prototype.canAddLeg = function canAddLeg(start, end) {
+        console.log('canAddLeg', start, end);
         return (0 === this.graph.countEdges(start, end));
     };
 
     MapController.prototype.addLeg = function addLeg(startBouy, endBouy) {
+        console.log('addLeg', startBouy, endBouy);
         if (startBouy && endBouy) {
-            if (this.canAddLeg(this.startBouy, this.endBouy)) { 
+            if (this.canAddLeg(this.active.leg.start, this.active.leg.end)) { 
                 var scope = this.scope;
                 var leg = {
                     start: startBouy._id,
@@ -436,46 +312,5 @@ define(['app',
         }
     };
 
-    MapController.prototype.addSingleLeg = function addSingleLeg() {
-        this.addLeg(this.startBouy, this.endBouy);
-    };
-
-    MapController.prototype.addDuplexLeg = function addDuplexLeg() {
-        this.addLeg(this.startBouy, this.endBouy);
-        this.addLeg(this.endBouy, this.startBouy);
-    };
-
-    MapController.prototype.setActivePath = function setActivePath(path) {
-        var sigma = this.sigma;
-        if (this.activePath) {
-            this.activePath.edges.forEach(function removeActivePathEdge(edge) {
-                sigma.dropEdge(edge._id);
-            });
-        }
-        this.activePath = path;
-        if (this.activePath) {
-            var nextId = 0;
-            this.activePath.edges.forEach(function removeActivePathEdge(edge) {
-                edge._id = 'activePath.' + (++nextId);
-            });
-            this.addEdgeToSigma(this.activePath.edges);
-            var activePathIds = this.activePath.edges.map(function getIds(edge) {
-                return edge._id;
-            });
-            this.sigma.iterEdges(function activeEdgesBlue(edge) {
-                edge.color = settings.graph.activePathColor;
-            }, activePathIds);
-        }
-        this.redrawSigma();
-    };
-
-    MapController.prototype.onRandomPath = function onRandomPath() {
-        this.setActivePath(this.graphAlgorithms.randomPath(this.graph, this.startBouy, this.endBouy));
-    };
-
-    MapController.prototype.onClearPath = function onClearPath() {
-        this.setActivePath();
-    };
-
-    app.controller('Map', ['$scope', 'ApiService', MapController]);
+    app.controller('Map', ['$scope', 'ApiService', '$q', MapController]);
 });

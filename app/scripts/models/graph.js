@@ -12,7 +12,14 @@ define(['./bouy', './edge', 'underscore'], function (Bouy, Edge) {
         this.edges = [];
     }
 
+    Graph.prototype.clear = function clear() {
+        console.log('Graph.clear');
+        this.vertices = [];
+        this.edges = [];
+    };
+
     Graph.prototype.addVertex = function addVertex(vertex) {
+        console.log('Graph.addVertex', vertex);
         var that = this;
         if (angular.isArray(vertex)) {
             vertex.forEach(function addVertexElement(vertex) {
@@ -29,6 +36,7 @@ define(['./bouy', './edge', 'underscore'], function (Bouy, Edge) {
     };
 
     Graph.prototype.addEdge = function addEdge(edge) {
+        console.log('Graph.addEdge', edge);
         var that = this;
         if (angular.isArray(edge)) {
             edge.forEach(function addEdgeElement(edge) {
@@ -67,6 +75,7 @@ define(['./bouy', './edge', 'underscore'], function (Bouy, Edge) {
     };
 
     Graph.prototype.findVertexById = function findVertex(vertexId) {
+        console.log('Graph.findVertex', vertexId);
         var found = this.vertices.filter(function filterOnId(vertex) {
             return vertexId === vertex._id;
         });
@@ -76,6 +85,7 @@ define(['./bouy', './edge', 'underscore'], function (Bouy, Edge) {
     };
 
     Graph.prototype.countEdges = function countEdges(start, end) {
+        console.log('Graph.countEdges', start, end);
         var count = this.edges.reduce(function countMatchingEdged(count, edge) {
             if (edge.start === start._id && edge.end === end._id) {
                 return count + 1;
@@ -86,6 +96,7 @@ define(['./bouy', './edge', 'underscore'], function (Bouy, Edge) {
     };
 
     Graph.prototype.getChildren = function getChildren(vertex) {
+        console.log('Graph.getChildren', vertex);
         var children = [];
         this.edges.forEach(function getChild(edge) {
             if (edge.start === vertex) {
@@ -96,6 +107,7 @@ define(['./bouy', './edge', 'underscore'], function (Bouy, Edge) {
     };
 
     Graph.prototype.getParents = function getParents(vertex) {
+        console.log('Graph.getParents', vertex);
         var parents = [];
         this.edges.forEach(function getChild(edge) {
             if (edge.start === vertex) {
@@ -103,6 +115,27 @@ define(['./bouy', './edge', 'underscore'], function (Bouy, Edge) {
             }
         });
         return parents;
+    };
+
+    Graph.prototype.getEdgesTo = function getEdgesTo(vertex) {
+        console.log('Graph.getEdgesTo', vertex);
+        return this.edges.filter(function filterTo(edge) {
+            return edge.end === vertex;
+        });
+    };
+
+    Graph.prototype.getEdgesFrom = function getEdgesFrom(vertex) {
+        console.log('Graph.getEdgesFrom', vertex);
+        return this.edges.filter(function filterTo(edge) {
+            return edge.start === vertex;
+        });
+    };
+
+    Graph.prototype.getEdgesToAndFrom = function getEdgesToAndFrom(vertex) {
+        console.log('Graph.getEdgesToAndFrom', vertex);
+        var to = this.getEdgesTo(vertex);
+        var from = this.getEdgesFrom(vertex);
+        return to.concat(from);
     };
 
     return Graph;
