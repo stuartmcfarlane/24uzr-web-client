@@ -50,7 +50,6 @@ define(['app',
             bouys = bouys.map(function constructBouys(bouy) {
                 return new Bouy(bouy);
             });
-            console.log('BouysLoaded', bouys);
             that.graph.addVertex(bouys);
             that.addVertexToSigma(bouys);
             that.redrawSigma();
@@ -63,7 +62,6 @@ define(['app',
             bouys = bouys.map(function constructBouys(bouy) {
                 return new Bouy(bouy);
             });
-            console.log('BouysCreated', bouys);
             that.graph.addVertex(bouys);
             that.addVertexToSigma(bouys);
             that.redrawSigma();
@@ -76,7 +74,6 @@ define(['app',
             bouys = bouys.map(function constructBouys(bouys) {
                 return new Bouy(bouy);
             });
-            console.log('BouyUpdated', bouys);
             that.updateVertexToSigma(bouys);
             that.redrawSigma();
         };
@@ -88,7 +85,6 @@ define(['app',
             bouys = bouys.map(function constructBouys(bouys) {
                 return new Bouy(bouy);
             });
-            console.log('BouysDeleted', bouys);
             that.sigma.emptyGraph();
             that.apiService.query('bouies')
             .then(function bouysQuerySuccess(bouys) {
@@ -112,7 +108,6 @@ define(['app',
                 leg.end = graph.findVertexById(leg.end);
                 return new Edge(leg);
             });
-            console.log('LegsLoaded', legs);
             that.graph.addEdge(legs);
             that.addEdgeToSigma(legs);
             that.redrawSigma();
@@ -128,7 +123,6 @@ define(['app',
                 leg.end = graph.findVertexById(leg.end);
                 return new Edge(leg);
             });
-            console.log('LegsCreated', legs);
             that.graph.addEdge(legs);
             that.addEdgeToSigma(legs);
             that.redrawSigma();
@@ -229,7 +223,6 @@ define(['app',
         try {
             if (angular.isArray(legs)) {
                 var that = this;
-                var sdm = legs;
                 legs.forEach(function(leg){
                     that.addEdgeToSigma.call(that, leg);
                 });
@@ -318,7 +311,7 @@ define(['app',
         this.drawCurrentBouy();
         this.drawCurrentLeg();
         this.sigma.draw();
-    }
+    };
 
     MapController.prototype.fixFocus = function fixFocus() {
         var bouyName = document.getElementById('bouy-name');

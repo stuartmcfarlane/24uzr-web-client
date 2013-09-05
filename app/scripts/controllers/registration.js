@@ -8,7 +8,6 @@ define(['app'], function (app) {
     }
 
     $scope.$on('$auth:registrationFailure', function (event, data) {
-      console.log("RegistrationController:",event,data);
       if(data === '403') {
         alert('Invalid username/password');
       } 

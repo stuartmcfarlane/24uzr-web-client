@@ -1,4 +1,4 @@
-define(['./edge', 'underscore'], function (Edge) {
+define(['./bouy', './edge', 'underscore'], function (Bouy, Edge) {
     'use strict';
 
     var defaultOptions = {
@@ -21,7 +21,7 @@ define(['./edge', 'underscore'], function (Edge) {
         }
         else {
             if (!(vertex instanceof Bouy)) {
-                vertex = new Bouy(bouy);
+                vertex = new Bouy(vertex);
             }
             this.vertices.push(vertex);
         }
@@ -37,9 +37,15 @@ define(['./edge', 'underscore'], function (Edge) {
         }
         else {
             if (! (edge instanceof Edge)) {
+                var start = this.findVertexById(edge.start);
+                var end = this.findVertexById(edge.end);
+                if (!start || !end) {
+                    console.log('Edge not added: No id');
+                    return this;
+                }
                 edge = new Edge(
-                    this.findVertexById(edge.start),
-                    this.findVertexById(edge.end)
+                    start,
+                    end
                 );
             }
             if (!edge.start || !edge.end) {

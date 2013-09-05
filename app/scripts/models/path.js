@@ -5,7 +5,7 @@ define(['./graph', './edge'], function (Graph, Edge) {
         Graph.apply(this);
     }
 
-    Graph.prototype.addVertex = function addVertex(vertex) {
+    Path.prototype.addVertex = function addVertex(vertex) {
         var that = this;
         if (angular.isArray(vertex)) {
             vertex.forEach(function addVertexElement(vertex) {
@@ -15,7 +15,7 @@ define(['./graph', './edge'], function (Graph, Edge) {
         else {
             if (this.vertices.length) {
                 this.edges.push(new Edge({
-                    start: this.vertices[this.vertices.length - 1], 
+                    start: this.vertices[this.vertices.length - 1],
                     end: vertex
                 }));
             }
@@ -24,5 +24,5 @@ define(['./graph', './edge'], function (Graph, Edge) {
         return this;
     };
 
-    return Graph;
+    return Path;
 });
