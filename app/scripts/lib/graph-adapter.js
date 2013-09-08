@@ -222,6 +222,7 @@ define(['settings', 'models/edge', 'underscore'], function (settings, Edge) {
     };
 
     GraphAdapter.prototype.setActiveBouy = function setActiveBouy(bouy) {
+        console.log('setActiveBouy', bouy);
         this.active.bouy = bouy;
         if (!this.active.leg) {
             this.active.leg = new Edge({

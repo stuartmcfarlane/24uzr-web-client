@@ -21,7 +21,7 @@ define(['./graph', './edge'], function (Graph, Edge) {
                 }));
             }
             this.vertices.push(vertex);
-            this.length = this.vertices.length;
+            this.length = this.edges.length;
         }
         return this;
     };

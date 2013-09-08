@@ -9,6 +9,27 @@
     </div>
     <div class="col-md-4">
         <div class="panel panel-default">
+            <div class="panel-heading">Paths
+                <span ng-show="map.pathsFound.length">(Found {{map.paths.length}} paths)</span>
+            </div>
+            <div class="functions panel-body">
+                <form class="form-horizontal" role="form">
+                    <div class="offset-md-1 col-md-12">
+                        <div class="form-group input-group">
+                            <input id="path-length" type="text" class="form-control"
+                                placeholder="Required length"
+                                ng-model="map.pathLength">
+                            <label for="bouy-name" class="input-group-addon">Length</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary"
+                        ng-click="map.onSelectPathPressed(path.path)" ng-repeat="path in map.paths"> {{path.name}} </button>
+                    <button type="submit" class="btn btn-warning"
+                        ng-click="map.onClearPathPressed()"> Clear </button>
+                </form>
+            </div>
+        </div>
+        <div class="panel panel-default">
             <div class="panel-heading">Bouy</div>
             <div class="functions panel-body">
                 <form class="form-horizontal" role="form">
@@ -35,22 +56,14 @@
                             <label for="bouy-longitude" class="input-group-addon">longitude</label>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary" ng-click="map.onAddBouyPressed()" ng-show="map.isAddingNode()">
-                        <!--i class="glyphicon glyphicon-plus icon-white icon-large"></i-->
-                        Save
-                    </button>
-                    <button type="submit" class="btn btn-primary" ng-click="map.onEditBouyPressed()" ng-show="map.isExistingNode()">
-                        <!--i class="glyphicon glyphicon-pencil icon-white icon-large"></i-->
-                        Save
-                    </button>
-                    <button type="submit" class="btn btn-primary" ng-click="map.onDeselectBouyPressed()" ng-show="map.isExistingNode()">
-                        <!--i class="glyphicon glyphicon-ban-circle icon-white icon-large"></i-->
-                        Deselect
-                    </button>
-                    <button type="submit" class="btn btn-danger" ng-click="map.onDeleteBouyPressed()" ng-show="map.isExistingNode()">
-                        <!--i class="glyphicon-trash icon-white icon-large"></i-->
-                        Delete
-                    </button>
+                    <button type="submit" class="btn btn-primary"
+                        ng-click="map.onAddBouyPressed()" ng-show="map.isAddingNode()"> Save </button>
+                    <button type="submit" class="btn btn-primary"
+                        ng-click="map.onEditBouyPressed()" ng-show="map.isExistingNode()"> Save </button>
+                    <button type="submit" class="btn btn-primary"
+                        ng-click="map.onDeselectBouyPressed()" ng-show="map.isExistingNode()"> Deselect </button>
+                    <button type="submit" class="btn btn-danger"
+                        ng-click="map.onDeleteBouyPressed()" ng-show="map.isExistingNode()"> Delete </button>
                 </form>
             </div>
         </div>
@@ -71,46 +84,10 @@
                             <label for="bouy-name" class="input-group-addon">End Bouy</label>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary" ng-click="map.onAddSingleLegPressed()">
-                        <!--i class="glyphicon glyphicon-arrow-right icon-white icon-large"></i-->
-                        One way
-                    </button>
-                    <button type="submit" class="btn btn-primary" ng-click="map.onAddDuplexLegPressed()">
-                        <!--i class="glyphicon glyphicon-resize-horizontal icon-white icon-large"></i-->
-                        Two way
-                    </button>
-                </form>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">Path <span ng-show="map.active.path">(length: {{map.active.path.length}})</span></div>
-            <div class="functions panel-body">
-                    <div class="offset-md-1 col-md-12">
-                        <div class="form-group input-group">
-                            <input readonly id="bouy-name" type="text" class="form-control"
-                                placeholder="Select a bouy"
-                                ng-model="map.active.leg.start.name">
-                            <label for="bouy-name" class="input-group-addon">Start Bouy</label>
-                        </div>
-                        <div class="form-group input-group">
-                            <input readonly id="bouy-name" type="text" class="form-control"
-                                placeholder="Select a bouy"
-                                ng-model="map.active.leg.end.name">
-                            <label for="bouy-name" class="input-group-addon">End Bouy</label>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary" ng-click="map.onRandomPathPressed()">
-                        <!--i class="glyphicon glyphicon-resize-horizontal icon-white icon-large"></i-->
-                        Random
-                    </button>
-                    <button type="submit" class="btn btn-primary" ng-click="map.onDijkstraPathPressed()">
-                        <!--i class="glyphicon glyphicon-resize-horizontal icon-white icon-large"></i-->
-                        Dijkstra
-                    </button>
-                    <button type="submit" class="btn btn-warning" ng-click="map.onClearPathPressed()">
-                        <!--i class="glyphicon glyphicon-resize-horizontal icon-white icon-large"></i-->
-                        Clear
-                    </button>
+                    <button type="submit" class="btn btn-primary"
+                        ng-click="map.onAddSingleLegPressed()"> One way </button>
+                    <button type="submit" class="btn btn-primary"
+                        ng-click="map.onAddDuplexLegPressed()"> Two way </button>
                 </form>
             </div>
         </div>

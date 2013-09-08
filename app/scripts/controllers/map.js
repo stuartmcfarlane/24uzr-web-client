@@ -40,6 +40,8 @@ define(['app',
             leg: undefined,
             path: undefined
         };
+        this.pathLength = 6;
+        this.paths = [];
 
         this.graphAdapter.setGraph(this.graph);
         this.graphAdapter.setActive(this.active);
@@ -174,6 +176,11 @@ define(['app',
         this.addLeg(this.active.leg.end, this.active.leg.start);
     };
 
+    MapController.prototype.onSelectPathPressed = function onSelectPathPressed(path) {
+        console.log('onSelectPathPressed', path);
+        this.graphAdapter.setActivePath(path);
+    }
+
     // button state helpers
 
     MapController.prototype.isExistingNode = function isExistingNode(node) {
@@ -294,13 +301,38 @@ define(['app',
 
     MapController.prototype.onBouySelected = function onBouySelected(bouy) {
         console.log('onBouySelected', bouy);
-        if (this.active.leg) {
-            var shortestPath = this.graphAlgorithms.dijkstra(
-                this.graph, this.active.leg.start, this.active.leg.end);
-            this.graphAdapter.setActivePath(shortestPath);
-        }
-        this.graphAdapter.redraw();
-        this.scope.$apply();
+        // this.graphAdapter.setActiveBouy(bouy);
+        var map = this;
+        setTimeout(function allPaths() {
+            map.scope.$apply(function applyWrapper() {
+                var paths;
+                console.log('doing work');
+                if (map.active.leg && map.active.leg.start && map.active.leg.end) {
+                    paths = map.graphAlgorithms.pathsWithLength(
+                        map.graph, map.active.leg.start, map.active.leg.end, {
+                            length: map.pathLength
+                        });
+                    var pathIdx = 0;
+                    paths = paths.map(function pathToObject(path) {
+                        return {
+                            name: ''+(++pathIdx),
+                            path: path
+                        };
+                    });
+                    paths.unshift({
+                        name: 'shortest',
+                        path: map.graphAlgorithms.shortestPath(
+                            map.graph, map.active.leg.start, map.active.leg.end)
+                    });
+                }
+                console.log('got paths');
+                if (paths && paths.length) {
+                    map.paths = paths;
+                    map.graphAdapter.setActivePath(paths[0].path);
+                    map.graphAdapter.redraw();
+                }
+            });
+        }, 0);
     };
 
     // helpers
