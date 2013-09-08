@@ -294,6 +294,11 @@ define(['app',
 
     MapController.prototype.onBouySelected = function onBouySelected(bouy) {
         console.log('onBouySelected', bouy);
+        if (this.active.leg) {
+            var shortestPath = this.graphAlgorithms.dijkstra(
+                this.graph, this.active.leg.start, this.active.leg.end);
+            this.graphAdapter.setActivePath(shortestPath);
+        }
         this.graphAdapter.redraw();
         this.scope.$apply();
     };

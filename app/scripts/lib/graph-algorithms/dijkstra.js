@@ -37,7 +37,7 @@ define(['../graph-algorithms', 'models/path', 'models/edge', 'underscore'], func
 
         var path;
 
-        if (!graph || !graph.vertices || !graph.vertices.length){
+        if (!graph || !graph.vertices || !graph.vertices.length || !start || !end){
             console.log('<dijstra');
             return undefined;
         }
