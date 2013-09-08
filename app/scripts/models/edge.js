@@ -7,5 +7,9 @@ define(['models/point'], function (Point) {
         this.end = edge.end;
     }
 
+    Edge.prototype.cost = function cost() {
+        return 1;
+    }
+
     return Edge;
 });

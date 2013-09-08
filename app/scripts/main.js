@@ -42,6 +42,7 @@ require([
     'lib/graph-adapter',
     'lib/graph-algorithms',
     'lib/graph-algorithms/random-path',
+    'lib/graph-algorithms/dijkstra',
 
     // Models
     'models/point',

@@ -103,6 +103,15 @@ define(['app',
                 this.active.leg.end));
     };
 
+    MapController.prototype.onDijkstraPathPressed = function onDijkstraPathPressed() {
+        console.log('onDijkstraPathPressed');
+        this.graphAdapter.setActivePath(
+            this.graphAlgorithms.dijkstra(
+                this.graph,
+                this.active.leg.start,
+                this.active.leg.end));
+    };
+
     MapController.prototype.onClearPathPressed = function onClearPathPressed() {
         console.log('onClearPathPressed');
         this.graphAdapter.setActivePath();
