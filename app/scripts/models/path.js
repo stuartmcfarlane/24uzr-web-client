@@ -43,7 +43,7 @@ define(['./graph', './edge'], function (Graph, Edge) {
             }
             console.log('prepend vertex', vertex.name);
             this.vertices.unshift(vertex);
-            this.length = this.vertices.length;
+            this.length = this.edges.length;
         }
         return this;
     };
