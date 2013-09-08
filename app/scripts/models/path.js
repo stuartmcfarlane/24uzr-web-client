@@ -3,6 +3,7 @@ define(['./graph', './edge'], function (Graph, Edge) {
 
     function Path () {
         Graph.apply(this);
+        this.length = 0;
     }
 
     Path.prototype.addVertex = function addVertex(vertex) {
@@ -20,6 +21,7 @@ define(['./graph', './edge'], function (Graph, Edge) {
                 }));
             }
             this.vertices.push(vertex);
+            this.length = this.vertices.length;
         }
         return this;
     };
