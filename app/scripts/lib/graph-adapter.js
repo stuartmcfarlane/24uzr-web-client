@@ -222,7 +222,7 @@ define(['settings', 'models/edge', 'underscore'], function (settings, Edge) {
     };
 
     GraphAdapter.prototype.setActiveBouy = function setActiveBouy(bouy) {
-        console.log('setActiveBouy', bouy);
+        settings.debug && console.log('setActiveBouy', bouy);
         this.active.bouy = bouy;
         if (!this.active.leg) {
             this.active.leg = new Edge({
@@ -259,17 +259,17 @@ define(['settings', 'models/edge', 'underscore'], function (settings, Edge) {
     };
 
     function dumpSigma (m, s) {
-        s.iterNodes(function(n){ console.log(m, n.label);});
+        s.iterNodes(function(n){ settings.debug && console.log(m, n.label);});
         s.iterEdges(function(e){ 
             var n1, n2;
             s.iterNodes(function(n){ n1 = n;}, [e.source]); 
             s.iterNodes(function(n){ n2 = n; }, [e.target]);
-            console.log(m, n1.label + ' -> ' + n2.label);
+            settings.debug && console.log(m, n1.label + ' -> ' + n2.label);
         });
     }
 
     GraphAdapter.prototype.redraw = function redraw() {
-        console.log('redraw');
+        settings.debug && console.log('redraw');
         dumpSigma('redraw', this.sigma);
         this.drawBouys();
         this.drawLegs();

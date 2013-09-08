@@ -4,6 +4,8 @@ define([], function() {
             target: 'sigma-canvas'
         },
 
+        debug: false,
+
         graph: {
             vertexInCardinality: 1,
             vertexOutCardinality: 1,

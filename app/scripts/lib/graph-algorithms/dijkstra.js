@@ -23,7 +23,8 @@
  *
  */
 
-define(['../graph-algorithms', 'models/path', 'models/edge', 'underscore'], function (GraphAlgorithms, Path, Edge) {
+define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'underscore'], 
+    function (settings, GraphAlgorithms, Path, Edge) {
     'use strict';
 
     var defaultOptions = {
@@ -32,13 +33,13 @@ define(['../graph-algorithms', 'models/path', 'models/edge', 'underscore'], func
     };
 
     GraphAlgorithms.prototype.dijkstra = function dijkstra(graph, start, end, options) {
-        console.log('>dijkstra', graph, start, end, options);
+        settings.debug && console.log('>dijkstra', graph, start, end, options);
         options = _.extend({}, defaultOptions, options | {});
 
         var path;
 
         if (!graph || !graph.vertices || !graph.vertices.length || !start || !end){
-            console.log('<dijkstra');
+            settings.debug && console.log('<dijkstra');
             return undefined;
         }
 
@@ -63,9 +64,9 @@ define(['../graph-algorithms', 'models/path', 'models/edge', 'underscore'], func
             var u = _.min(Q, function minDist(vertex) {
                 return dist[vertex];
             });
-            console.log('u', u);
+            settings.debug && console.log('u', u);
             Q = Q.filter(function removeShortest(e) { return u !== e; });
-            console.log('Q', Q);
+            settings.debug && console.log('Q', Q);
             // The following line looks wrong but it isn't.
             // Underscore returns Infinity if it can't find the min which is the case
             // if all elements in Q have the value Infitity
@@ -74,7 +75,7 @@ define(['../graph-algorithms', 'models/path', 'models/edge', 'underscore'], func
                 break;
             }
             if (u === end._id) {
-                console.log('found');
+                settings.debug && console.log('found');
                 // reached end
                 // built path back to start
                 path = new Path();
@@ -90,16 +91,16 @@ define(['../graph-algorithms', 'models/path', 'models/edge', 'underscore'], func
             graph.getEdgesFrom(graph.findVertexById(u)).forEach(function eachEdgeFrom(edge) {
                 var alt = dist[u] + edge.cost();
                 var v = edge.end._id;
-                console.log('child cost', v, alt);
+                settings.debug && console.log('child cost', v, alt);
                 if (alt < dist[v]) {
-                    console.log('new shortest', v);
+                    settings.debug && console.log('new shortest', v);
                     dist[v] = alt;
                     previous[v] = u;
                     // Reorder v in the Queue - ???
                 }
             });
         }
-        console.log('<dijkstra', path);
+        settings.debug && console.log('<dijkstra', path);
         return path;
     };
 
