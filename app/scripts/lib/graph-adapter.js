@@ -239,14 +239,14 @@ define(['settings', 'models/edge', 'underscore'], function (settings, Edge) {
     GraphAdapter.prototype.setActivePath = function setActivePath(path) {
         var sigma = this.sigma;
         if (this.active.path) {
-            this.active.path.edges.forEach(function removeActivePathEdge(edge) {
+            this.active.path.edges.forEach(function removeActiveEdge(edge) {
                 sigma.dropEdge(edge._id);
             });
         }
         this.active.path = path;
         if (this.active.path) {
             var nextId = 0;
-            this.active.path.edges.forEach(function removeActivePathEdge(edge) {
+            this.active.path.edges.forEach(function addEdge(edge) {
                 edge._id = 'activePath.' + (++nextId);
                 sigma.addEdge(edge._id, edge.start._id, edge.end._id);
             });
@@ -254,6 +254,38 @@ define(['settings', 'models/edge', 'underscore'], function (settings, Edge) {
             this.sigma.iterEdges(function activeEdgesBlue(edge) {
                 edge.color = settings.graph.activePathColor;
             }, path.edges.map(function getEdgeIds(edge) { return edge._id; }));
+        }
+        this.redraw();
+    };
+
+    GraphAdapter.prototype.setEdgeHistogram = function setEdgeHistogram(edges) {
+        var sigma = this.sigma;
+        if (this.active.edgeHistogram) {
+            this.active.edgeHistogram.forEach(function removeActiveEdge(edge) {
+                sigma.dropEdge(edge._id);
+            });
+        }
+        this.active.edgeHistogram = edges;
+        if (this.active.edgeHistogram) {
+            var nextId = 0;
+            var histogram = {};
+            var min = 0;
+            var max = 0;
+            this.active.edgeHistogram.forEach(function addEdge(edge) {
+                histogram[edge._id] = edge.count;
+                if (edge.count > max) {
+                    max = edge.count;
+                }
+                if (edge.count < min) {
+                    min = edge.count;
+                }
+                sigma.addEdge(edge._id, edge.start._id, edge.end._id);
+            });
+
+            this.sigma.iterEdges(function activeEdgesBlue(edge) {
+                edge.color = settings.edgeHistogram.gradient.getColor(min, max, histogram[edge.id]);
+                edge.size = settings.edgeHistogram.gradient.getSize(min, max, histogram[edge.id]);
+            }, this.active.edgeHistogram.map(function getEdgeIds(edge) { return edge._id; }));
         }
         this.redraw();
     };

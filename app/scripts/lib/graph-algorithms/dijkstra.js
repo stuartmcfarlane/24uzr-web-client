@@ -34,7 +34,7 @@ define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'unders
 
     GraphAlgorithms.prototype.dijkstra = function dijkstra(graph, start, end, options) {
         settings.debug && console.log('>dijkstra', graph, start, end, options);
-        options = _.extend({}, defaultOptions, options | {});
+        options = _.extend({}, defaultOptions, options || {});
 
         var path;
 

@@ -7,7 +7,7 @@ define(['../graph-algorithms', 'models/path', 'underscore'], function (GraphAlgo
     };
 
     GraphAlgorithms.prototype.randomPath = function randomPath(graph, start, end, options) {
-        options = _.extend({}, defaultOptions, options | {});
+        options = _.extend({}, defaultOptions, options || {});
 
         var path;
         var node = start;

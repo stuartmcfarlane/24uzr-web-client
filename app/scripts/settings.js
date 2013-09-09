@@ -49,6 +49,39 @@ define([], function() {
             mouseProperties: {
                 maxRatio: 32
             }
+        },
+        edgeHistogram: {
+            _id: 'edgeHistogram',
+            gradient: {
+                getSize: function(min, max, n) {
+                    var maxSize = 8;
+                    return ~~(n * (maxSize / Math.abs(max - min)));
+                },
+                getColor: function(min, max, n) {
+                    // var colors = [
+                    //     '#0f0', '#0e0', '#0d0', '#0c0',
+                    //     '#0b0', '#0a0', '#090', '#080',
+                    //     '#070', '#060', '#050', '#040',
+                    //     '#030', '#020', '#010', '#000'
+                    // ];
+                    var colors = [
+                        '#bbb',
+                        '#aaa',
+                        '#999',
+                        '#888',
+                        '#777',
+                        '#666',
+                        '#555',
+                        '#444',
+                        '#333',
+                        '#222',
+                        '#111',
+                        '#000',
+                    ];
+                    var i = ~~(n * ((colors.length - 1) / Math.abs(max - min)));
+                    return colors[i];
+                }
+            },
         }
     };
 });

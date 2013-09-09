@@ -46,6 +46,7 @@ require([
     'lib/graph-algorithms/random-path',
     'lib/graph-algorithms/shortest-path',
     'lib/graph-algorithms/paths-with-length',
+    'lib/graph-algorithms/edge-histogram',
 
     // Models
     'models/point',

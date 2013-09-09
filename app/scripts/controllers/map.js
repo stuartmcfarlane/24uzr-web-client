@@ -39,7 +39,8 @@ define(['app',
         this.active = {
             bouy: undefined,
             leg: undefined,
-            path: undefined
+            path: undefined,
+            edgeHistogram: undefined
         };
         this.findAllPathsTime = 0;
         this.pathLength = 6;
@@ -319,10 +320,15 @@ define(['app',
         var map = this;
         setTimeout(function allPaths() {
             map.scope.$apply(function applyWrapper() {
+                settings.debug && console.log('doing work');
                 var startTime = performance.now();
                 var paths;
-                settings.debug && console.log('doing work');
+                var shortestPath;
                 if (map.active.leg && map.active.leg.start && map.active.leg.end) {
+
+                    shortestPath = map.graphAlgorithms.shortestPath(
+                        map.graph, map.active.leg.start, map.active.leg.end);
+
                     paths = map.graphAlgorithms.pathsWithLength(
                         map.graph, map.active.leg.start, map.active.leg.end, {
                             length: map.pathLength
@@ -334,19 +340,16 @@ define(['app',
                             path: path
                         };
                     });
-                    paths.unshift({
-                        name: 'shortest',
-                        path: map.graphAlgorithms.shortestPath(
-                            map.graph, map.active.leg.start, map.active.leg.end)
-                    });
                 }
                 settings.debug && console.log('got paths');
-                if (paths && paths.length) {
-                    map.paths = paths;
-                    map.graphAdapter.setActivePath(paths[0].path);
-                    map.graphAdapter.redraw();
+                map.paths = paths;
+                if (shortestPath) {
+                    // map.graphAdapter.setActivePath(shortestPath);
                 }
+                var edgeHistogram = map.graphAlgorithms.edgeHistogram(paths);
+                map.graphAdapter.setEdgeHistogram(edgeHistogram);
                 map.findAllPathsTime = ~~(performance.now() - startTime);
+                map.graphAdapter.redraw();
             });
         }, 10);
     };
