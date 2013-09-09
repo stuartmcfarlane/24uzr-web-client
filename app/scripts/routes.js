@@ -14,9 +14,9 @@ define(['angular', 'app'], function (angular, app) {
         controller: 'Home',
         public: true
       })
-      .when('/users', {
-        templateUrl: t.view('users'),
-        controller: 'Users'
+      .when('/ship', {
+        templateUrl: t.view('ship'),
+        controller: 'Ship'
       })
       .when('/map', {
         templateUrl: t.view('map'),

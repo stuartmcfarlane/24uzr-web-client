@@ -54,6 +54,7 @@ require([
     'models/graph',
     'models/path',
     'models/bouy',
+    'models/ship',
 
     // Controllers
     'controllers/home',
@@ -62,6 +63,7 @@ require([
     'controllers/logout',
     'controllers/registration',
     'controllers/map',
+    'controllers/ship',
 
     // Directives
     'directives/string-to-number',
