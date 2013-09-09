@@ -29,10 +29,13 @@ define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'unders
 
     var defaultOptions = {
         maxLength: 100,
-        maxAttempts: 10
+        maxAttempts: 10,
+        cost: GraphAlgorithms.prototype.edgeLength
+
     };
 
     GraphAlgorithms.prototype.dijkstra = function dijkstra(graph, start, end, options) {
+        
         settings.debug && console.log('>dijkstra', graph, start, end, options);
         options = _.extend({}, defaultOptions, options || {});
 
@@ -89,7 +92,7 @@ define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'unders
             }
             // where edge.end has not yet been removed from Q.
             graph.getEdgesFrom(graph.findVertexById(u)).forEach(function eachEdgeFrom(edge) {
-                var alt = dist[u] + edge.cost();
+                var alt = dist[u] + options.cost(edge);
                 var v = edge.end._id;
                 settings.debug && console.log('child cost', v, alt);
                 if (alt < dist[v]) {

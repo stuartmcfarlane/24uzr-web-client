@@ -3,14 +3,16 @@ define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'unders
     'use strict';
 
     var defaultOptions = {
+        cost: GraphAlgorithms.prototype.edgeLength
     };
 
-    GraphAlgorithms.prototype.dsl = function dsl(graph, start, end, length) {
+    GraphAlgorithms.prototype.dsl = function dsl(graph, start, end, length, options) {
+        options = _.extend({}, defaultOptions, options || {});
         settings.debug && console.log('>dsl', start.name, end.name, length);
         var paths = [];
         var that = this;
 
-        if (length < 0) {
+        if (length < 0 || length === NaN) {
             settings.debug && console.log('<dsl: exhausted', start.name);
             return undefined;
         }
@@ -24,7 +26,7 @@ define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'unders
         }
         var children = graph.getChildren(start);
         var allChildPaths = children.map(function childPaths(child) {
-            return that.dsl.call(that, graph, child, end, length - 1);
+            return that.dsl.call(that, graph, child, end, length - options.cost({start: start, end: child}));
         });
         settings.debug && console.log('dsl: allChildPaths', start.name, length, allChildPaths);
         allChildPaths = allChildPaths

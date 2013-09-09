@@ -4,7 +4,7 @@ define([], function() {
             target: 'sigma-canvas'
         },
 
-        debug: true,
+        debug: false,
 
         graph: {
             vertexInCardinality: 1,

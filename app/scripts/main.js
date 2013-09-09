@@ -41,6 +41,7 @@ require([
     // Lib
     'lib/graph-adapter',
     'lib/graph-algorithms',
+    'lib/graph-algorithms/edge-length',
     'lib/graph-algorithms/dijkstra',
     'lib/graph-algorithms/dsl',
     'lib/graph-algorithms/random-path',
