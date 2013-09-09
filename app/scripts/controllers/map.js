@@ -17,13 +17,14 @@
 
 define(['app',
     'settings',
+    'lib/performance',
     'lib/graph-adapter',
     'models/bouy',
     'models/graph',
     'models/edge',
     'lib/graph-algorithms'],
 
-    function (app, settings, GraphAdapter, Bouy, Graph, Edge, GraphAlgorithms) {
+    function (app, settings, performance, GraphAdapter, Bouy, Graph, Edge, GraphAlgorithms) {
     'use strict';
 
     function MapController($scope, ApiService, $q) {
@@ -40,6 +41,7 @@ define(['app',
             leg: undefined,
             path: undefined
         };
+        this.findAllPathsTime = 0;
         this.pathLength = 6;
         this.paths = [];
 
@@ -75,11 +77,18 @@ define(['app',
 
     MapController.prototype.onActiveBouyChanged = function onActiveBouyChanged() {
         settings.debug && console.log('onActiveBouyChanged');
-    }
+    };
 
     MapController.prototype.onActiveLegChanged = function onActiveLegChanged() {
         settings.debug && console.log('onActiveLegChanged');
-    }
+    };
+
+    // model change events
+
+    MapController.prototype.onPathLengthChanged = function onPathLengthChanged(a, b, scope) {
+        settings.debug && console.log('onPathLengthChanged');
+        this.findAllPaths();
+    };
 
     // button events
 
@@ -301,10 +310,16 @@ define(['app',
 
     MapController.prototype.onBouySelected = function onBouySelected(bouy) {
         settings.debug && console.log('onBouySelected', bouy);
-        // this.graphAdapter.setActiveBouy(bouy);
+        this.findAllPaths();
+    };
+
+    // helpers
+
+    MapController.prototype.findAllPaths = function findAllPaths() {
         var map = this;
         setTimeout(function allPaths() {
             map.scope.$apply(function applyWrapper() {
+                var startTime = performance.now();
                 var paths;
                 settings.debug && console.log('doing work');
                 if (map.active.leg && map.active.leg.start && map.active.leg.end) {
@@ -331,11 +346,10 @@ define(['app',
                     map.graphAdapter.setActivePath(paths[0].path);
                     map.graphAdapter.redraw();
                 }
+                map.findAllPathsTime = ~~(performance.now() - startTime);
             });
-        }, 0);
+        }, 10);
     };
-
-    // helpers
 
     MapController.prototype.canAddLeg = function canAddLeg(start, end) {
         settings.debug && console.log('canAddLeg', start, end);

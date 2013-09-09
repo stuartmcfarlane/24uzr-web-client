@@ -10,7 +10,7 @@
     <div class="col-md-4">
         <div class="panel panel-default">
             <div class="panel-heading">Paths
-                <span ng-show="map.pathsFound.length">(Found {{map.paths.length}} paths)</span>
+                <span ng-show="map.paths.length">(Found {{map.paths.length}} paths) {{map.findAllPathsTime}} ms</span>
             </div>
             <div class="functions panel-body">
                 <form class="form-horizontal" role="form">
@@ -18,13 +18,14 @@
                         <div class="form-group input-group">
                             <input id="path-length" type="text" class="form-control"
                                 placeholder="Required length"
-                                ng-model="map.pathLength">
+                                ng-model="map.pathLength"
+                                ng-change="map.onPathLengthChanged()">
                             <label for="bouy-name" class="input-group-addon">Length</label>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary"
+                    <button class="btn btn-primary"
                         ng-click="map.onSelectPathPressed(path.path)" ng-repeat="path in map.paths"> {{path.name}} </button>
-                    <button type="submit" class="btn btn-warning"
+                    <button class="btn btn-warning"
                         ng-click="map.onClearPathPressed()"> Clear </button>
                 </form>
             </div>
