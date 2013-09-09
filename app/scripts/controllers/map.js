@@ -331,7 +331,8 @@ define(['app',
 
                     paths = map.graphAlgorithms.pathsWithLength(
                         map.graph, map.active.leg.start, map.active.leg.end, {
-                            length: map.pathLength
+                            length: map.pathLength,
+                            cost: map.graphAlgorithms.makeEdgeSailingTime(1)
                         });
                     var pathIdx = 0;
                     paths = paths.map(function pathToObject(path) {
