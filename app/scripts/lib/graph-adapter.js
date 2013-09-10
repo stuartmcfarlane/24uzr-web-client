@@ -82,6 +82,17 @@ define(['settings', 'models/edge', 'underscore'], function (settings, Edge) {
         this.graph.clear();
     };
 
+    GraphAdapter.prototype.graph2sigma = function graph2sigma(vertex, node) {
+        return _.extend(node || {}, {
+            label: vertex.name,
+            color: vertex.color || settings.graph.defaultVertexColor,
+                // x = latitude, y = -longitude
+                // scale up sigma scale
+            x: vertex.location.lon * 100,
+            y: vertex.location.lat * -100
+        });
+    };
+
     GraphAdapter.prototype.addBouy = function addBouy(vertices) {
         try {
             if (angular.isArray(vertices)) {
@@ -92,12 +103,7 @@ define(['settings', 'models/edge', 'underscore'], function (settings, Edge) {
             }
             else {
                 var vertex = vertices;
-                this.sigma.addNode(vertex._id,{
-                    label: vertex.name,
-                    color: vertex.color || settings.graph.defaultVertexColor,
-                    x: vertex.location.x,
-                    y: vertex.location.y
-                });
+                this.sigma.addNode(vertex._id, this.graph2sigma(vertex));
             }
         }
         catch(error) {
@@ -114,10 +120,7 @@ define(['settings', 'models/edge', 'underscore'], function (settings, Edge) {
         else {
             var vertex = vertices;
             this.sigma.iterNodes(function updateNode(node) {
-                node.label = vertex.name;
-                node.color = vertex.color || settings.graph.defaultVertexColor;
-                node.x = vertex.location.x;
-                node.y = vertex.location.y;
+                this.graph2sigma(vertex, node);
             }, [vertex._id]);
         }
     };
@@ -135,6 +138,15 @@ define(['settings', 'models/edge', 'underscore'], function (settings, Edge) {
         }
     };
 
+    function m2knots(m) {
+        return m * 1.94384617178935;
+    }
+
+    GraphAdapter.prototype.makeEdgeLabel = function makeEdgeLabel(edge) {
+        var label = edge.start.name + ' - ' + edge.end.name + ' : ' + m2knots(edge.getLengthMeters());
+        return label;
+    };
+
     GraphAdapter.prototype.addLeg = function addLeg(edges) {
         try {
             if (angular.isArray(edges)) {
@@ -145,7 +157,9 @@ define(['settings', 'models/edge', 'underscore'], function (settings, Edge) {
             }
             else {
                 var edge = edges;
-                this.sigma.addEdge(edge._id, edge.start._id, edge.end._id);
+                this.sigma.addEdge(edge._id, edge.start._id, edge.end._id, {
+                    label: this.makeEdgeLabel(edge)
+                });
             }
         }
         catch (error) {
@@ -222,7 +236,7 @@ define(['settings', 'models/edge', 'underscore'], function (settings, Edge) {
     };
 
     GraphAdapter.prototype.setActiveBouy = function setActiveBouy(bouy) {
-        settings.debug && console.log('setActiveBouy', bouy);
+        settings.debug && console.log('setActiveBouy', bouy, this.active);
         this.active.bouy = bouy;
         if (!this.active.leg) {
             this.active.leg = new Edge({

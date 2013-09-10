@@ -4,6 +4,7 @@ define([], function() {
             target: 'sigma-canvas'
         },
 
+        // debug: true,
         debug: false,
 
         graph: {
@@ -40,7 +41,7 @@ define([], function() {
             },
             graphProperties: {
                 arrowDisplaySize: 10,
-                sideMargin: 20,
+                sideMargin: 5,
                 minNodeSize: 0.5,
                 maxNodeSize: 5,
                 minEdgeSize: 1,

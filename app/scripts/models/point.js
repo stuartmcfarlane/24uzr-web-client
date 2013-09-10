@@ -1,9 +1,9 @@
 define([], function () {
     'use strict';
 
-    function Point (x, y) {
-        this.x = x;
-        this.y = y;
+    function Point (lat, lon) {
+        this.lon = lon;
+        this.lat = lat;
     };
 
     return Point;

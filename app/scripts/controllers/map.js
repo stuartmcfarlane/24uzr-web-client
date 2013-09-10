@@ -43,7 +43,7 @@ define(['app',
             edgeHistogram: undefined
         };
         this.findAllPathsTime = 0;
-        this.pathLength = 6;
+        this.raceTime = undefined;
         this.paths = [];
 
         this.graphAdapter.setGraph(this.graph);
@@ -86,8 +86,13 @@ define(['app',
 
     // model change events
 
-    MapController.prototype.onPathLengthChanged = function onPathLengthChanged(a, b, scope) {
+    MapController.prototype.onPathLengthChanged = function onPathLengthChanged() {
         settings.debug && console.log('onPathLengthChanged');
+        this.findAllPaths();
+    };
+
+    MapController.prototype.onRaceTimeChanged = function onRaceTimeChanged() {
+        settings.debug && console.log('onRaceTimeChanged');
         this.findAllPaths();
     };
 
@@ -127,6 +132,11 @@ define(['app',
     MapController.prototype.onClearPathPressed = function onClearPathPressed() {
         settings.debug && console.log('onClearPathPressed');
         this.graphAdapter.setActivePath();
+    };
+
+    MapController.prototype.onFindPathsPressed = function onFindPathsPressed() {
+        settings.debug && console.log('onFindPathsPressed');
+        this.findAllPaths();
     };
 
     MapController.prototype.onEditBouyPressed = function onEditBouyPressed(bouy) {
@@ -206,10 +216,10 @@ define(['app',
             this.active.bouy.name !== undefined &&
             /[^\s]/.test(this.active.bouy.name) &&
             this.active.bouy.location !== undefined &&
-            this.active.bouy.location.x !== undefined &&
-            /[^\s]/.test(this.active.bouy.location.x) &&
-            this.active.bouy.location.y !== undefined &&
-            /[^\s]/.test(this.active.bouy.location.y)
+            this.active.bouy.location.lon !== undefined &&
+            /[^\s]/.test(this.active.bouy.location.lon) &&
+            this.active.bouy.location.lon !== undefined &&
+            /[^\s]/.test(this.active.bouy.location.lon)
         );
     };
 
@@ -311,28 +321,39 @@ define(['app',
 
     MapController.prototype.onBouySelected = function onBouySelected(bouy) {
         settings.debug && console.log('onBouySelected', bouy);
-        this.findAllPaths();
+        this.scope.$apply();
     };
 
     // helpers
 
     MapController.prototype.findAllPaths = function findAllPaths() {
+        if (!this.active.leg) {
+            this.active.leg = {};
+        }
+        if (!this.active.leg.start) {
+            this.active.leg.start = this.graph.findVertexByName('start');
+        }
+        if (!this.active.leg.end) {
+            this.active.leg.end = this.graph.findVertexByName('finish');
+        }
+        if (!this.active.leg.start || !this.active.leg.end) {
+            return;
+        }
         var map = this;
         setTimeout(function allPaths() {
             map.scope.$apply(function applyWrapper() {
                 settings.debug && console.log('doing work');
-                var startTime = performance.now();
+                var perfStartTime = performance.now();
                 var paths;
-                var shortestPath;
+                var raceTimeSeconds = map.raceTime * 60 * 60;
                 if (map.active.leg && map.active.leg.start && map.active.leg.end) {
-
-                    shortestPath = map.graphAlgorithms.shortestPath(
-                        map.graph, map.active.leg.start, map.active.leg.end);
-
-                    paths = map.graphAlgorithms.pathsWithLength(
-                        map.graph, map.active.leg.start, map.active.leg.end, {
-                            length: map.pathLength,
-                            cost: map.graphAlgorithms.makeEdgeSailingTime(1)
+                    paths = map.graphAlgorithms.pathsWithTime(
+                        map.graph,
+                        map.active.leg.start,
+                        map.active.leg.end,
+                        {
+                            time: raceTimeSeconds,
+                            // speed: map.graphAlgorithms.makeEdgeSailingTime(1)
                         });
                     var pathIdx = 0;
                     paths = paths.map(function pathToObject(path) {
@@ -344,12 +365,9 @@ define(['app',
                 }
                 settings.debug && console.log('got paths');
                 map.paths = paths;
-                if (shortestPath) {
-                    // map.graphAdapter.setActivePath(shortestPath);
-                }
                 var edgeHistogram = map.graphAlgorithms.edgeHistogram(paths);
                 map.graphAdapter.setEdgeHistogram(edgeHistogram);
-                map.findAllPathsTime = ~~(performance.now() - startTime);
+                map.findAllPathsTime = ~~(performance.now() - perfStartTime);
                 map.graphAdapter.redraw();
             });
         }, 10);
