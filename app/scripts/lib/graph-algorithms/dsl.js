@@ -3,16 +3,18 @@ define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'unders
     'use strict';
 
     var defaultOptions = {
-        cost: GraphAlgorithms.prototype.edgeLength
+        cost: function(edge) {
+            return 1;
+        }
     };
 
-    GraphAlgorithms.prototype.dsl = function dsl(graph, start, end, length, options) {
+    GraphAlgorithms.prototype.dsl = function dsl(graph, start, end, costAvailable, options) {
         options = _.extend({}, defaultOptions, options || {});
-        settings.debug && console.log('>dsl', start.name, end.name, length);
+        settings.debug && console.log('>dsl', start.name, end.name, costAvailable);
         var paths = [];
         var that = this;
 
-        if (length < 0 || length === NaN) {
+        if (costAvailable < 0 || costAvailable === NaN) {
             settings.debug && console.log('<dsl: exhausted', start.name);
             return undefined;
         }
@@ -26,15 +28,16 @@ define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'unders
         }
         var children = graph.getChildren(start);
         var allChildPaths = children.map(function childPaths(child) {
-            return that.dsl.call(that, graph, child, end, length - options.cost({start: start, end: child}));
+            var cost = options.cost({start: start, end: child}, costAvailable)
+            return that.dsl.call(that, graph, child, end, costAvailable - cost);
         });
-        settings.debug && console.log('dsl: allChildPaths', start.name, length, allChildPaths);
+        settings.debug && console.log('dsl: allChildPaths', start.name, costAvailable, allChildPaths);
         allChildPaths = allChildPaths
         .filter(function filterChildren(childPaths) {
             // remove dead paths
             return childPaths !== undefined;
         });
-        settings.debug && console.log('dsl: allChildPaths filtered', start.name, length, allChildPaths);
+        settings.debug && console.log('dsl: allChildPaths filtered', start.name, costAvailable, allChildPaths);
         if (!allChildPaths.length) {
             settings.debug && console.log('<dsl: no child paths');
             return undefined;
@@ -47,7 +50,7 @@ define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'unders
                 paths.push(childPath.prependVertex(start));
             });
         });
-        settings.debug && console.log('dsl: paths mapped', start.name, length, paths);
+        settings.debug && console.log('dsl: paths mapped', start.name, costAvailable, paths);
 
         settings.debug && console.log('<dsl', paths);
         return paths;

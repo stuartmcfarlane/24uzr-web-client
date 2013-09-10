@@ -3,6 +3,7 @@ define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'unders
     'use strict';
 
     var defaultOptions = {
+        cost: GraphAlgorithms.prototype.edgeLength
     };
 
     GraphAlgorithms.prototype.pathsWithLength = function pathsWithLength(graph, start, end, options) {
