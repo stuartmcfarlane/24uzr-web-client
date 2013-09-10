@@ -7,13 +7,12 @@ define(['models/point', 'lib/graph-algorithms'], function (Point, GraphAlgorithm
         this.end = edge.end;
     }
 
-    function toRad(Value) {
-        /** Converts numeric degrees to radians */
-        return Value * Math.PI / 180;
-    }
-
     Edge.prototype.getLengthMeters = function getLengthMeters() {
         return GraphAlgorithms.prototype.edgeLength(this);
+    };
+
+    Edge.prototype.getHeading = function getHeading() {
+        return GraphAlgorithms.prototype.edgeHeading(edge);
     };
 
     return Edge;

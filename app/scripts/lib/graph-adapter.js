@@ -1,4 +1,4 @@
-define(['settings', 'models/edge', 'underscore'], function (settings, Edge) {
+define(['settings', 'models/edge', 'lodash'], function (settings, Edge) {
     'use strict';
 
     var defaultOptions = {

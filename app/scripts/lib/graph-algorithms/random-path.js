@@ -1,4 +1,4 @@
-define(['../graph-algorithms', 'models/path', 'underscore'], function (GraphAlgorithms, Path) {
+define(['../graph-algorithms', 'models/path', 'lodash'], function (GraphAlgorithms, Path) {
     'use strict';
 
     var defaultOptions = {

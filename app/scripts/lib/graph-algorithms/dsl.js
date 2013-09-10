@@ -1,4 +1,4 @@
-define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'underscore'],
+define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'lodash'],
     function (settings, GraphAlgorithms, Path, Edge) {
     'use strict';
 
@@ -29,8 +29,8 @@ define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'unders
         var children = graph.getChildren(start);
         var allChildPaths = children.map(function childPaths(child) {
             var cost = options.cost({start: start, end: child}, costAvailable);
-            settings.debug && console.log(' dsl: '+start.name+' -> '+child.name+' : '+new Edge({start: start, end: child}).getLengthMeters()+' m, ' +cost/3600+' hrs');
-            // settings.debug && console.log(' dsl: cost', cost/3600, costAvailable/3600);
+            settings.debug && console.log(' dsl: '+start.name+' -> '+child.name+' : '+GraphAlgorithms.prototype.edgeLength({start: start, end: child})+' m, ' +cost/3600+' hrs');
+            settings.debug && console.log(' dsl: cost', cost/3600, costAvailable/3600);
             return that.dsl.call(that, graph, child, end, costAvailable - cost, options);
         });
         settings.debug && console.log('dsl: allChildPaths', start.name, costAvailable, allChildPaths);

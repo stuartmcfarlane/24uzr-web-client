@@ -1,4 +1,4 @@
-define(['settings', './bouy', './edge', 'underscore'], function (settings, Bouy, Edge) {
+define(['settings', './bouy', './edge', 'lodash'], function (settings, Bouy, Edge) {
     'use strict';
 
     var defaultOptions = {

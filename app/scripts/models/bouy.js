@@ -1,4 +1,4 @@
-define(['underscore'], function () {
+define(['lodash'], function () {
     'use strict';
 
     function Bouy (vertex) {

@@ -1,49 +1,52 @@
 define(['angular', 'app'], function (angular, app) {
-  
+
   'use strict';
 
   app.config(
-    ['$routeProvider', '$templatesProvider'
-    , function ($routeProvider, $templatesProvider) {
+      ['$routeProvider', '$templatesProvider'
+      , function ($routeProvider, $templatesProvider) {
 
-    var t = $templatesProvider;
+        var t = $templatesProvider;
 
-    $routeProvider
-      .when('/', {
-        templateUrl: t.view('home'),
-        controller: 'Home',
-        public: true
-      })
-      .when('/ship', {
-        templateUrl: t.view('ship'),
-        controller: 'Ship'
-      })
-      .when('/map', {
-        templateUrl: t.view('map'),
-        controller: 'Map'
-      })
-      .when('/login', {
-        templateUrl: t.view('login'),
-        controller: 'Login',
-        public: true
-      })
-      .when('/logout', {
-        templateUrl: t.view('login'),
-        controller: 'Logout',
-        public: true
-      })
-      .when('/register', {
-        templateUrl: t.view('registration'),
-        controller: 'Registration',
-        public: true
-      })
-      .when('/error', {
-        templateUrl: t.partial('error'),
-        public: true
-      })
-      .otherwise({
-        redirectTo: '/'
-      });
-  }]);
-
+        $routeProvider
+        .when('/', {
+            templateUrl: t.view('home'),
+            controller: 'Home',
+            public: true
+        })
+        .when('/ship', {
+            templateUrl: t.view('ship'),
+            controller: 'Ship'
+        })
+        .when('/map', {
+            templateUrl: t.view('map'),
+            controller: 'Map'
+        })
+        .when('/planner', {
+            templateUrl: t.view('planner'),
+            controller: 'Planner'
+        })
+        .when('/login', {
+            templateUrl: t.view('login'),
+            controller: 'Login',
+            public: true
+        })
+        .when('/logout', {
+            templateUrl: t.view('login'),
+            controller: 'Logout',
+            public: true
+        })
+        .when('/register', {
+            templateUrl: t.view('registration'),
+            controller: 'Registration',
+            public: true
+        })
+        .when('/error', {
+            templateUrl: t.partial('error'),
+            public: true
+        })
+        .otherwise({
+            redirectTo: '/'
+        });
+    }]);
 });

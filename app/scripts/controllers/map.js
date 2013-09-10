@@ -21,10 +21,9 @@ define(['app',
     'lib/graph-adapter',
     'models/bouy',
     'models/graph',
-    'models/edge',
-    'lib/graph-algorithms'],
+    'models/edge'],
 
-    function (app, settings, performance, GraphAdapter, Bouy, Graph, Edge, GraphAlgorithms) {
+    function (app, settings, performance, GraphAdapter, Bouy, Graph, Edge) {
     'use strict';
 
     function MapController($scope, ApiService, $q) {
@@ -33,18 +32,12 @@ define(['app',
 
         this.apiService = ApiService;
         this.graphAdapter = new GraphAdapter();
-        this.graphAlgorithms = new GraphAlgorithms();
         this.graph = new Graph(settings.graph);
 
         this.active = {
             bouy: undefined,
             leg: undefined,
-            path: undefined,
-            edgeHistogram: undefined
         };
-        this.findAllPathsTime = 0;
-        this.raceTime = undefined;
-        this.paths = [];
 
         this.graphAdapter.setGraph(this.graph);
         this.graphAdapter.setActive(this.active);
@@ -86,16 +79,6 @@ define(['app',
 
     // model change events
 
-    MapController.prototype.onPathLengthChanged = function onPathLengthChanged() {
-        settings.debug && console.log('onPathLengthChanged');
-        this.findAllPaths();
-    };
-
-    MapController.prototype.onRaceTimeChanged = function onRaceTimeChanged() {
-        settings.debug && console.log('onRaceTimeChanged');
-        this.findAllPaths();
-    };
-
     // button events
 
     MapController.prototype.onAddBouyPressed = function onAddBouyPressed(bouy) {
@@ -109,34 +92,6 @@ define(['app',
             scope.$broadcast('bouy:created', bouy);
         });
         this.fixFocus();
-    };
-
-    MapController.prototype.onRandomPathPressed = function onRandomPathPressed() {
-        settings.debug && console.log('onRandomPathPressed');
-        this.graphAdapter.setActivePath(
-            this.graphAlgorithms.randomPath(
-                this.graph,
-                this.active.leg.start,
-                this.active.leg.end));
-    };
-
-    MapController.prototype.onDijkstraPathPressed = function onDijkstraPathPressed() {
-        settings.debug && console.log('onDijkstraPathPressed');
-        this.graphAdapter.setActivePath(
-            this.graphAlgorithms.dijkstra(
-                this.graph,
-                this.active.leg.start,
-                this.active.leg.end));
-    };
-
-    MapController.prototype.onClearPathPressed = function onClearPathPressed() {
-        settings.debug && console.log('onClearPathPressed');
-        this.graphAdapter.setActivePath();
-    };
-
-    MapController.prototype.onFindPathsPressed = function onFindPathsPressed() {
-        settings.debug && console.log('onFindPathsPressed');
-        this.findAllPaths();
     };
 
     MapController.prototype.onEditBouyPressed = function onEditBouyPressed(bouy) {
@@ -195,11 +150,6 @@ define(['app',
         this.addLeg(this.active.leg.start, this.active.leg.end);
         this.addLeg(this.active.leg.end, this.active.leg.start);
     };
-
-    MapController.prototype.onSelectPathPressed = function onSelectPathPressed(path) {
-        settings.debug && console.log('onSelectPathPressed', path);
-        this.graphAdapter.setActivePath(path);
-    }
 
     // button state helpers
 
@@ -325,53 +275,6 @@ define(['app',
     };
 
     // helpers
-
-    MapController.prototype.findAllPaths = function findAllPaths() {
-        if (!this.active.leg) {
-            this.active.leg = {};
-        }
-        if (!this.active.leg.start) {
-            this.active.leg.start = this.graph.findVertexByName('start');
-        }
-        if (!this.active.leg.end) {
-            this.active.leg.end = this.graph.findVertexByName('finish');
-        }
-        if (!this.active.leg.start || !this.active.leg.end) {
-            return;
-        }
-        var map = this;
-        setTimeout(function allPaths() {
-            map.scope.$apply(function applyWrapper() {
-                settings.debug && console.log('doing work');
-                var perfStartTime = performance.now();
-                var paths;
-                var raceTimeSeconds = map.raceTime * 60 * 60;
-                if (map.active.leg && map.active.leg.start && map.active.leg.end) {
-                    paths = map.graphAlgorithms.pathsWithTime(
-                        map.graph,
-                        map.active.leg.start,
-                        map.active.leg.end,
-                        {
-                            time: raceTimeSeconds,
-                            // speed: map.graphAlgorithms.makeEdgeSailingTime(1)
-                        });
-                    var pathIdx = 0;
-                    paths = paths.map(function pathToObject(path) {
-                        return {
-                            name: ''+(++pathIdx),
-                            path: path
-                        };
-                    });
-                }
-                settings.debug && console.log('got paths');
-                map.paths = paths;
-                var edgeHistogram = map.graphAlgorithms.edgeHistogram(paths);
-                map.graphAdapter.setEdgeHistogram(edgeHistogram);
-                map.findAllPathsTime = ~~(performance.now() - perfStartTime);
-                map.graphAdapter.redraw();
-            });
-        }, 10);
-    };
 
     MapController.prototype.canAddLeg = function canAddLeg(start, end) {
         settings.debug && console.log('canAddLeg', start, end);

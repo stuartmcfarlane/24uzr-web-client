@@ -1,0 +1,79 @@
+<div class="row">
+    <div class="col-md-8">
+        <div class="panel panel-default">
+            <div class="panel-heading">Race planner
+                <select
+                    ng-show="planner.ships && planner.ships.length"
+                    ng-model="planner.ship"
+                    ng-options="s.name for s in planner.ships">
+                </select>
+            </div>
+            <div class="planner panel-body">
+                <div id="sigma-canvas"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">Race conditions</div>
+            <div class="functions panel-body">
+                <form class="form-horizontal" role="form">
+                    <div class="offset-md-1 col-md-12">
+                        <div class="form-group input-group">
+                            <input id="wind-direction" type="text" class="form-control"
+                                placeholder="degrees"
+                                ng-model="planner.windAngle"
+                                ng-change="planner.onWindChanged()">
+                            <label for="wind-direction" class="input-group-addon">Wind direction</label>
+                        </div>
+                    </div>
+                    <div class="offset-md-1 col-md-12">
+                        <div class="form-group input-group">
+                            <input id="wind-speed" type="text" class="form-control"
+                                placeholder="knopen"
+                                ng-model="planner.windKnots"
+                                ng-change="planner.onWindChanged()">
+                            <label for="wind-speed" class="input-group-addon">Wind speed</label>
+                        </div>
+                    </div>
+                    <div class="offset-md-1 col-md-12">
+                        <div class="form-group input-group">
+                            <input readonly id="bouy-name" type="text" class="form-control"
+                                placeholder="Select a bouy"
+                                ng-model="planner.active.leg.start.name">
+                            <label for="bouy-name" class="input-group-addon">Start Bouy</label>
+                        </div>
+                        <div class="form-group input-group">
+                            <input readonly id="bouy-name" type="text" class="form-control"
+                                placeholder="Select a bouy"
+                                ng-model="planner.active.leg.end.name">
+                            <label for="bouy-name" class="input-group-addon">End Bouy</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">Paths
+                <span ng-show="planner.paths.length">(Found {{planner.paths.length}} paths) {{planner.findAllPathsTime}} ms</span>
+            </div>
+            <div class="functions panel-body">
+                <form class="form-horizontal" role="form">
+                    <div class="offset-md-1 col-md-12">
+                        <div class="form-group input-group">
+                            <input id="race-time" type="text" class="form-control"
+                                placeholder="hours"
+                                ng-model="planner.raceTime"
+                                ng-change="planner.onRaceTimeChanged()">
+                            <label for="race-time" class="input-group-addon">Race time</label>
+                        </div>
+                    </div>
+                    <button class="btn btn-warning"
+                        ng-click="planner.onClearPathPressed()"> Clear </button>
+                    <button type="submit" class="btn btn-primary"
+                        ng-click="planner.onFindPathsPressed()"> FInd paths </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

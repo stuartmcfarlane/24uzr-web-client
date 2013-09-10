@@ -1,4 +1,4 @@
-define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'underscore'],
+define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'lodash'],
     function (settings, GraphAlgorithms, Path, Edge) {
     'use strict';
 

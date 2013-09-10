@@ -23,7 +23,7 @@
  *
  */
 
-define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'underscore'], 
+define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'lodash'], 
     function (settings, GraphAlgorithms, Path, Edge) {
     'use strict';
 
@@ -71,7 +71,7 @@ define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'unders
             Q = Q.filter(function removeShortest(e) { return u !== e; });
             settings.debug && console.log('Q', Q);
             // The following line looks wrong but it isn't.
-            // Underscore returns Infinity if it can't find the min which is the case
+            // lodash returns Infinity if it can't find the min which is the case
             // if all elements in Q have the value Infitity
             if (u === Infinity || dist[u] === Infinity) {
                 // all remaining vertices are inaccessible from source

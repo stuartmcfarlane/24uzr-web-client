@@ -9,28 +9,6 @@
     </div>
     <div class="col-md-4">
         <div class="panel panel-default">
-            <div class="panel-heading">Paths
-                <span ng-show="map.paths.length">(Found {{map.paths.length}} paths) {{map.findAllPathsTime}} ms</span>
-            </div>
-            <div class="functions panel-body">
-                <form class="form-horizontal" role="form">
-                    <div class="offset-md-1 col-md-12">
-                        <div class="form-group input-group">
-                            <input id="race-time" type="text" class="form-control"
-                                placeholder="hours"
-                                ng-model="map.raceTime"
-                                ng-change="map.onRaceTimeChanged()">
-                            <label for="race-time" class="input-group-addon">Race time</label>
-                        </div>
-                    </div>
-                    <button class="btn btn-warning"
-                        ng-click="map.onClearPathPressed()"> Clear </button>
-                    <button type="submit" class="btn btn-primary"
-                        ng-click="map.onFindPathsPressed()"> FInd paths </button>
-                </form>
-            </div>
-        </div>
-        <div class="panel panel-default">
             <div class="panel-heading">Bouy</div>
             <div class="functions panel-body">
                 <form class="form-horizontal" role="form">

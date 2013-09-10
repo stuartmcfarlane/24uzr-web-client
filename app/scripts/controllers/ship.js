@@ -78,7 +78,7 @@ define(['app',
     ShipController.prototype.onUpdateShipPressed = function onUpdateShipPressed() {
         settings.debug && console.log('onUpdateShipPressed');
         var scope = this.scope;
-        this.apiService.update('ships', ship)
+        this.apiService.update('ships', this.ship)
         .then(function(ship) {
             scope.$broadcast('ship:deleted', ship);
         });

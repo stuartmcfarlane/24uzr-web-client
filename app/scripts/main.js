@@ -4,7 +4,8 @@ require.config({
         angular: '../components/angular-unstable/angular',
         async: '../components/async/lib/async',
         jquery: '../components/jquery/jquery',
-        underscore: '../components/underscore/underscore',
+        // lodash: '../components/lodash/lodash',
+        lodash: '../components/lodash/lodash',
         ngResource: '../components/angular-resource-unstable/angular-resource',
         'http-auth-interceptor': '../components/angular-http-auth/src/http-auth-interceptor',
         sigma: '../components/sigma/sigma',
@@ -39,10 +40,12 @@ require([
     'settings',
 
     // Lib
+    'lib/convert',
     'lib/graph-adapter',
     'lib/graph-algorithms',
-    'lib/graph-algorithms/edge-sailing-time',
+    'lib/graph-algorithms/edge-heading',
     'lib/graph-algorithms/edge-length',
+    'lib/graph-algorithms/edge-sailing-time',
     'lib/graph-algorithms/dijkstra',
     'lib/graph-algorithms/dsl',
     'lib/graph-algorithms/random-path',
@@ -65,6 +68,7 @@ require([
     'controllers/login',
     'controllers/logout',
     'controllers/registration',
+    'controllers/planner',
     'controllers/map',
     'controllers/ship',
 
