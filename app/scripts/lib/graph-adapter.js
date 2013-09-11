@@ -272,15 +272,10 @@ define(['settings', 'models/edge', 'lodash'], function (settings, Edge) {
         this.redraw();
     };
 
-    GraphAdapter.prototype.setEdgeHistogram = function setEdgeHistogram(edges) {
-        var sigma = this.sigma;
+    GraphAdapter.prototype.showEdgeHistogram = function showEdgeHistogram() {
         if (this.active.edgeHistogram) {
-            this.active.edgeHistogram.forEach(function removeActiveEdge(edge) {
-                sigma.dropEdge(edge._id);
-            });
-        }
-        this.active.edgeHistogram = edges;
-        if (this.active.edgeHistogram) {
+            console.log('showHistograp')
+            var sigma = this.sigma;
             var nextId = 0;
             var histogram = {};
             var min = 0;
@@ -300,8 +295,22 @@ define(['settings', 'models/edge', 'lodash'], function (settings, Edge) {
                 edge.color = settings.edgeHistogram.gradient.getColor(min, max, histogram[edge.id]);
                 edge.size = settings.edgeHistogram.gradient.getSize(min, max, histogram[edge.id]);
             }, this.active.edgeHistogram.map(function getEdgeIds(edge) { return edge._id; }));
+            this.redraw();
         }
-        this.redraw();
+    };
+
+    GraphAdapter.prototype.hideEdgeHistogram = function hideEdgeHistogram() {
+        var sigma = this.sigma;
+        if (this.active.edgeHistogram) {
+            this.active.edgeHistogram.forEach(function removeActiveEdge(edge) {
+                sigma.dropEdge(edge._id);
+            });
+            this.redraw();
+        }
+    };
+
+    GraphAdapter.prototype.setEdgeHistogram = function setEdgeHistogram(edges) {
+        this.active.edgeHistogram = edges;
     };
 
     function dumpSigma (m, s) {

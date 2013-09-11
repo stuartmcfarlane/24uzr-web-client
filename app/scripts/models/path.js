@@ -48,5 +48,11 @@ define(['settings', './graph', './edge'], function (settings, Graph, Edge) {
         return this;
     };
 
+    Path.prototype.getLengthMeters = function getLengthMeters() {
+        return this.edges.reduce(function sumEdgeLengths(length, edge) {
+            return length + edge.getLengthMeters();
+        }, 0);
+    };
+
     return Path;
 });

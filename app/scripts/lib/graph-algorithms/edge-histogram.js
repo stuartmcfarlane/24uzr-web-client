@@ -14,8 +14,7 @@ define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'lodash
         var edges = [];
         if (paths) {
             paths.forEach(function samplePath(path) {
-                settings.debug && console.log(' edgeHistogram: path ' + path.name, path);
-                path.path.edges.forEach(function sampleEdge(edge) {
+                path.edges.forEach(function sampleEdge(edge) {
                     settings.debug && console.log(' edgeHistogram: edge', edge);
                     var key = edge.start._id + edge.end._id;
                     if (!histogram[key]) {

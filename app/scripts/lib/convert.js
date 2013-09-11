@@ -37,6 +37,14 @@ define([], function () {
         return Value * 180 / Math.PI;
     }
 
+    function m2nm(Value) {
+        return Value * 0.000539957;
+    }
+
+    function nm2m(Value) {
+        return Value * 1852;
+    }
+
     return {
         knots2mps: knots2mps,
         mps2knots: mps2knots,
@@ -44,5 +52,7 @@ define([], function () {
         mps2bft: mps2bft,
         deg2rad: deg2rad,
         rad2deg: rad2deg,
+        m2nm: m2nm,
+        nm2m: nm2m,
     };
 });

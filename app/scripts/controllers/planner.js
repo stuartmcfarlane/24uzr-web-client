@@ -38,6 +38,7 @@ define(['app',
         this.ship = undefined;
         this.ships = [];
         this.paths = [];
+        this.calculating = false;
 
         this.graphAdapter.setGraph(this.graph);
         this.graphAdapter.setActive(this.active);
@@ -90,7 +91,12 @@ define(['app',
         this.findAllPaths();
     };
 
-    // button events
+    PlannerController.prototype.onWindChanged = function onWindChanged() {
+        settings.debug && console.log('onWindChanged');
+        this.findAllPaths();
+    };
+
+    // button, hover events
 
     PlannerController.prototype.onClearPathPressed = function onClearPathPressed() {
         settings.debug && console.log('onClearPathPressed');
@@ -100,6 +106,28 @@ define(['app',
     PlannerController.prototype.onFindPathsPressed = function onFindPathsPressed() {
         settings.debug && console.log('onFindPathsPressed');
         this.findAllPaths();
+    };
+
+    PlannerController.prototype.onHoverPathInList = function onHoverPathInList(path) {
+        settings.debug && console.log('onHoverPathInList', path);
+        var planner = this;
+        var foundPath;
+        if (path && path._id) {
+            var foundPaths = planner.paths.filter(function pathWithId(somePath) {
+                return somePath._id === path._id;
+            });
+            if (foundPaths) {
+                foundPath = foundPaths[0];
+            }
+        }
+        if (foundPath) {
+            planner.graphAdapter.setActivePath(foundPath);
+            planner.graphAdapter.hideEdgeHistogram();
+        }
+        else {
+            planner.graphAdapter.setActivePath(foundPath);
+            planner.graphAdapter.showEdgeHistogram();
+        }
     };
 
     // button state helpers
@@ -212,6 +240,8 @@ define(['app',
         };
         var speed = makeSpeedFn(this.ship, wind, planner.raceTime);
 
+        planner.paths = undefined;
+        planner.calculating = true;
         setTimeout(function allPaths() {
             planner.scope.$apply(function applyWrapper() {
                 settings.debug && console.log('doing work');
@@ -229,20 +259,24 @@ define(['app',
                             time: raceTimeSeconds,
                             speed: speed
                         });
+                    settings.debug && console.log('got paths');
+                    var edgeHistogram = planner.graphAlgorithms.edgeHistogram(paths);
+                    planner.graphAdapter.setEdgeHistogram(edgeHistogram);
+                    paths = planner.graphAlgorithms.lengthSortPaths(paths);
                     var pathIdx = 0;
                     paths = paths.map(function pathToObject(path) {
-                        return {
-                            name: ''+(++pathIdx),
-                            path: path
-                        };
+                        ++pathIdx;
+                        return _.extend({}, path, {
+                            _id: pathIdx,
+                            name: 'path '+ pathIdx,
+                            lengthNauticalMiles: convert.m2nm(path.lengthMeters)
+                        });
                     });
+                    planner.paths = paths;
+                    planner.findAllPathsTime = ~~(performance.now() - perfStartTime);
+                    planner.graphAdapter.redraw();
                 }
-                settings.debug && console.log('got paths');
-                planner.paths = paths;
-                var edgeHistogram = planner.graphAlgorithms.edgeHistogram(paths);
-                planner.graphAdapter.setEdgeHistogram(edgeHistogram);
-                planner.findAllPathsTime = ~~(performance.now() - perfStartTime);
-                planner.graphAdapter.redraw();
+                planner.calculating = false;
             });
         }, 10);
     };

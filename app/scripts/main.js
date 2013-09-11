@@ -53,6 +53,7 @@ require([
     'lib/graph-algorithms/paths-with-length',
     'lib/graph-algorithms/paths-with-time',
     'lib/graph-algorithms/edge-histogram',
+    'lib/graph-algorithms/length-sort-paths',
 
     // Models
     'models/point',

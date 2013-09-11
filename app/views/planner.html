@@ -56,6 +56,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">Paths
                 <span ng-show="planner.paths.length">(Found {{planner.paths.length}} paths) {{planner.findAllPathsTime}} ms</span>
+                <span ng-show="planner.calculating">searching...</span>
             </div>
             <div class="functions panel-body">
                 <form class="form-horizontal" role="form">
@@ -68,10 +69,20 @@
                             <label for="race-time" class="input-group-addon">Race time</label>
                         </div>
                     </div>
-                    <button class="btn btn-warning"
+                    <!--button class="btn btn-warning"
                         ng-click="planner.onClearPathPressed()"> Clear </button>
                     <button type="submit" class="btn btn-primary"
-                        ng-click="planner.onFindPathsPressed()"> FInd paths </button>
+                        ng-click="planner.onFindPathsPressed()"> FInd paths </button-->
+                    <div class="offset-md-1 col-md-12" ng-show="planner.paths && planner.paths.length">
+                        <div class="form-group input-group" ng-repeat="path in planner.paths | limitTo:10">
+                            <p class="form-control"
+                                ng-model="path"
+                                ng-mouseenter="planner.onHoverPathInList(path)"
+                                ng-mouseleave="planner.onHoverPathInList()"
+                                ng-click="planner.onClickPathInList(path)"
+                                >{{path.lengthNauticalMiles}}</p>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>

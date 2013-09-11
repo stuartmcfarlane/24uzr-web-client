@@ -25,7 +25,7 @@ define([], function() {
             endBouyColor: '#f00',
             endBouySize: 10,
 
-            activePathColor: '#009',
+            activePathColor: '#0f0',
         },
         sigma: {
             drawingProperties: {
