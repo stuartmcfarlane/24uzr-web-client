@@ -5,7 +5,8 @@ define(['settings', 'lib/convert', '../graph-algorithms', 'models/path', 'models
     var defaultOptions = {
         speed: function speed(edge, time) {
             return convert.knots2mps(6);
-        }
+        },
+        maxEdgeRepeats: 2
     };
 
     GraphAlgorithms.prototype.pathsWithTime = function pathsWithTime(graph, start, end, options) {
@@ -14,7 +15,7 @@ define(['settings', 'lib/convert', '../graph-algorithms', 'models/path', 'models
         if (!options.cost) {
             options.cost = GraphAlgorithms.prototype.makeEdgeSailingTime(options.speed);
         }
-        var paths = this.dsl(graph, start, end, options.time, options);
+        var paths = this.dsl(graph, start, end, options.time, options.cost, [], options.maxEdgeRepeats);
         if (!paths) {
             paths = [];
         }
