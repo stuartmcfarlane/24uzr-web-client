@@ -45,8 +45,8 @@ define([], function () {
         return Value * 1852;
     }
 
-    var degMinDec = /([123456]?[0-9])[: ]([123456]?[0-9]\.[0-9]{1,3})/;
-    var degMinSec = /([123456]?[0-9])[: ]([123456]?[0-9])[: ]([123456]?[0-9])/;
+    var degMinDec = /([0123456]?[0-9])[: ]([0123456]?[0-9]\.[0-9]{1,3})/;
+    var degMinSec = /([0123456]?[0-9])[: ]([0123456]?[0-9])[: ]([0123456]?[0-9])/;
 
     function degMinDec2deg(latOrLon) {
         var parts = degMinDec.exec(latOrLon);
