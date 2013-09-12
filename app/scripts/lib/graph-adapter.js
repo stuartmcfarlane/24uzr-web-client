@@ -119,8 +119,9 @@ define(['settings', 'models/edge', 'lodash'], function (settings, Edge) {
         }
         else {
             var vertex = vertices;
+            var that = this;
             this.sigma.iterNodes(function updateNode(node) {
-                this.graph2sigma(vertex, node);
+                that.graph2sigma(vertex, node);
             }, [vertex._id]);
         }
     };

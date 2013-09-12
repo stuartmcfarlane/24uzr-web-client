@@ -84,7 +84,7 @@ define(['app',
     MapController.prototype.onAddBouyPressed = function onAddBouyPressed(bouy) {
         settings.debug && console.log('onAddBouyPressed', bouy);
         if (bouy === undefined) {
-            bouy = this.active.bouy;
+            bouy = new Bouy(this.active.bouy);
             this.graphAdapter.setActiveBouy(undefined);
         }
         var scope = this.scope;
@@ -97,7 +97,7 @@ define(['app',
     MapController.prototype.onEditBouyPressed = function onEditBouyPressed(bouy) {
         settings.debug && console.log('onEditBouyPressed', bouy);
         if (bouy === undefined) {
-            bouy = this.active.bouy;
+            bouy = new Bouy(this.active.bouy);
         }
         var scope = this.scope;
         this.apiService.update('bouies', bouy).then(function(bouy) {

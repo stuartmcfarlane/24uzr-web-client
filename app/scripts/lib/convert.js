@@ -45,6 +45,33 @@ define([], function () {
         return Value * 1852;
     }
 
+    var degMinDec = /([123456]?[0-9])[: ]([123456]?[0-9]\.[0-9]{1,3})/;
+    var degMinSec = /([123456]?[0-9])[: ]([123456]?[0-9])[: ]([123456]?[0-9])/;
+
+    function degMinDec2deg(latOrLon) {
+        var parts = degMinDec.exec(latOrLon);
+        return (+parts[1]) + (+parts[2]) / 60;
+    }
+
+    function degMinSec2deg(latOrLon) {
+        var parts = degMinSec.exec(latOrLon);
+        return (+parts[1]) + (+parts[2]) / 60 + (+parts[3]) / 3600;
+    }
+
+    function locationInput2storageFormat(location) {
+        ['lat','lon'].forEach(function(k) {
+            if (!angular.isNumber(location[k])) {
+                if (degMinDec.test(location[k])) {
+                    location[k] = degMinDec2deg(location[k]);
+                }
+                else if (degMinSec.test(location[k])) {
+                    location[k] = degMinSec2deg(location[k]);
+                }
+            }
+        });
+        return location;
+    }
+
     return {
         knots2mps: knots2mps,
         mps2knots: mps2knots,
@@ -54,5 +81,6 @@ define([], function () {
         rad2deg: rad2deg,
         m2nm: m2nm,
         nm2m: nm2m,
+        locationInput2storageFormat: locationInput2storageFormat,
     };
 });
