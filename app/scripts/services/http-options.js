@@ -1,4 +1,4 @@
-define(['angular', 'app'],function (angular, app) {
+define(['angular', 'app', 'settings'],function (angular, app, settings) {
   'use strict';
 
   /**
@@ -56,7 +56,7 @@ define(['angular', 'app'],function (angular, app) {
       * it allows you to test the app against a aws server
       * running either in dev, staging or production
       */
-      var domain = 'http://localhost:8080';
+      var domain = window.location.protocol + '//' + window.location.hostname + ':' + settings.api.port;
 
       $httpProvider.defaults.withCredentials = withCredentials;
 

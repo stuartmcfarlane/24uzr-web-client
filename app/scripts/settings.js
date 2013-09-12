@@ -1,5 +1,8 @@
 define([], function() {
     return {
+        api: {
+            port: 8080
+        },
         graphAdapter: {
             target: 'sigma-canvas'
         },
