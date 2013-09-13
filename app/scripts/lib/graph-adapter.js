@@ -48,6 +48,7 @@ define(['settings', 'models/edge', 'lodash'], function (settings, Edge) {
     };
 
     GraphAdapter.prototype.onClickVertex = function onClickVertex(event) {
+        settings.debug.event && console.log('onClickVertex', event);
         var node;
         event.target.iterNodes(function(n){
             node = n;
@@ -57,6 +58,7 @@ define(['settings', 'models/edge', 'lodash'], function (settings, Edge) {
     };
 
     GraphAdapter.prototype.onBouySelected = function onBouySelected(bouy) {
+        settings.debug.event && console.log('onBouySelected', bouy);
         this.setActiveBouy(bouy);
         fireEvent(this, 'onBouySelected', [bouy]);
     };
@@ -237,7 +239,7 @@ define(['settings', 'models/edge', 'lodash'], function (settings, Edge) {
     };
 
     GraphAdapter.prototype.setActiveBouy = function setActiveBouy(bouy) {
-        settings.debug && console.log('setActiveBouy', bouy, this.active);
+        settings.debug.trace && console.log('setActiveBouy', bouy, this.active);
         this.active.bouy = bouy;
         if (!this.active.leg) {
             this.active.leg = new Edge({
@@ -311,21 +313,24 @@ define(['settings', 'models/edge', 'lodash'], function (settings, Edge) {
     };
 
     GraphAdapter.prototype.setEdgeHistogram = function setEdgeHistogram(edges) {
+        if (this.active.edgeHistogram) {
+            this.hideEdgeHistogram();
+        }
         this.active.edgeHistogram = edges;
     };
 
     function dumpSigma (m, s) {
-        s.iterNodes(function(n){ settings.debug && console.log(m, n.label);});
+        s.iterNodes(function(n){ settings.debug.trace && console.log(m, n.label);});
         s.iterEdges(function(e){ 
             var n1, n2;
             s.iterNodes(function(n){ n1 = n;}, [e.source]); 
             s.iterNodes(function(n){ n2 = n; }, [e.target]);
-            settings.debug && console.log(m, n1.label + ' -> ' + n2.label);
+            settings.debug.trace && console.log(m, n1.label + ' -> ' + n2.label);
         });
     }
 
     GraphAdapter.prototype.redraw = function redraw() {
-        settings.debug && console.log('redraw');
+        settings.debug.trace && console.log('redraw');
         dumpSigma('redraw', this.sigma);
         this.drawBouys();
         this.drawLegs();

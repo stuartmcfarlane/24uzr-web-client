@@ -36,13 +36,13 @@ define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'lodash
 
     GraphAlgorithms.prototype.dijkstra = function dijkstra(graph, start, end, options) {
         
-        settings.debug && console.log('>dijkstra', graph, start, end, options);
+        settings.debug.trace && console.log('>dijkstra', graph, start, end, options);
         options = _.extend({}, defaultOptions, options || {});
 
         var path;
 
         if (!graph || !graph.vertices || !graph.vertices.length || !start || !end){
-            settings.debug && console.log('<dijkstra');
+            settings.debug.trace && console.log('<dijkstra');
             return undefined;
         }
 
@@ -67,9 +67,9 @@ define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'lodash
             var u = _.min(Q, function minDist(vertex) {
                 return dist[vertex];
             });
-            settings.debug && console.log('u', u);
+            settings.debug.trace && console.log('u', u);
             Q = Q.filter(function removeShortest(e) { return u !== e; });
-            settings.debug && console.log('Q', Q);
+            settings.debug.trace && console.log('Q', Q);
             // The following line looks wrong but it isn't.
             // lodash returns Infinity if it can't find the min which is the case
             // if all elements in Q have the value Infitity
@@ -78,7 +78,7 @@ define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'lodash
                 break;
             }
             if (u === end._id) {
-                settings.debug && console.log('found');
+                settings.debug.trace && console.log('found');
                 // reached end
                 // built path back to start
                 path = new Path();
@@ -94,16 +94,16 @@ define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'lodash
             graph.getEdgesFrom(graph.findVertexById(u)).forEach(function eachEdgeFrom(edge) {
                 var alt = dist[u] + options.cost(edge);
                 var v = edge.end._id;
-                settings.debug && console.log('child cost', v, alt);
+                settings.debug.trace && console.log('child cost', v, alt);
                 if (alt < dist[v]) {
-                    settings.debug && console.log('new shortest', v);
+                    settings.debug.trace && console.log('new shortest', v);
                     dist[v] = alt;
                     previous[v] = u;
                     // Reorder v in the Queue - ???
                 }
             });
         }
-        settings.debug && console.log('<dijkstra', path);
+        settings.debug.trace && console.log('<dijkstra', path);
         return path;
     };
 

@@ -38,45 +38,45 @@ define(['app',
     // api completion events
 
     ShipController.prototype.onShipsLoaded = function onShipsLoaded(event, ships) {
-        settings.debug && console.log('>onShipsLoaded', event, ships);
+        settings.debug.event && console.log('>onShipsLoaded', event, ships);
         if (!angular.isArray(ships)) {
             ships = [ships];
         }
         ships = ships.map(function constructShips(ship) {
             return new Ship(ship);
         });
-        settings.debug && console.log(' onShipsLoaded', ships);
+        settings.debug.event && console.log(' onShipsLoaded', ships);
         event.currentScope.ctrl.ships = ships;
     };
 
     ShipController.prototype.onShipsCreated = function onShipCreated(event, ship) {
-        settings.debug && console.log('onShipsCreated', event, ship);
+        settings.debug.event && console.log('onShipsCreated', event, ship);
     };
 
     ShipController.prototype.onShipsUpdated = function onShipUpdated(event, ship) {
-        settings.debug && console.log('onShipsUpdated', event, ship);
+        settings.debug.event && console.log('onShipsUpdated', event, ship);
     };
 
     ShipController.prototype.onShipDeleted = function onShipDeleted(event, ships) {
-        settings.debug && console.log('onShipsDeleted', event, ships);
+        settings.debug.event && console.log('onShipsDeleted', event, ships);
     };
 
     // button pressed event handlers
 
     ShipController.prototype.onCreateShipPressed = function onCreateShipPressed() {
-        settings.debug && console.log('onCreateShipPressed');
+        settings.debug.event && console.log('onCreateShipPressed');
         this.ship = new Ship(this.ship);
         this.ships.push(this.ship);
         var scope = this.scope;
         this.apiService.create('ships', this.ship)
         .then(function shipCreated(ship) {
-            settings.debug && console.log('shipCreated', ship);
+            settings.debug.trace && console.log('shipCreated', ship);
             scope.$broadcast('ship:created', ship);
         });
     };
 
     ShipController.prototype.onUpdateShipPressed = function onUpdateShipPressed() {
-        settings.debug && console.log('onUpdateShipPressed');
+        settings.debug.event && console.log('onUpdateShipPressed');
         var scope = this.scope;
         this.apiService.update('ships', this.ship)
         .then(function(ship) {
@@ -85,12 +85,12 @@ define(['app',
     };
 
     ShipController.prototype.onDeselectShipPressed = function onDeselectShipPressed() {
-        settings.debug && console.log('onDeselectShipPressed');
+        settings.debug.event && console.log('onDeselectShipPressed');
         this.ship = new Ship();
     };
 
     ShipController.prototype.onDeleteShipPressed = function onDeleteShipPressed() {
-        settings.debug && console.log('onDeleteShipPressed');
+        settings.debug.event && console.log('onDeleteShipPressed');
         var scope = this.scope;
         var ship = this.ship;
         this.ship = new Ship();
@@ -107,24 +107,24 @@ define(['app',
     // button state helpers
 
     ShipController.prototype.isCreatingNewShip = function isCreatingNewShip() {
-        // settings.debug && console.log('>isCreatingNewShip', this);
+        // settings.debug.trace && console.log('>isCreatingNewShip', this);
         var creating = this.ship && (
             this.ship.name &&
             this.ship.name.trim().length
         ) && !this.isExistingShip();
-        // settings.debug && console.log('<isCreatingNewShip', creating);
+        // settings.debug.trace && console.log('<isCreatingNewShip', creating);
         return creating;
     };
 
     ShipController.prototype.isExistingShip = function isExistingShip() {
-        // settings.debug && console.log('>isExistingShip', this);
+        // settings.debug.trace && console.log('>isExistingShip', this);
         var existing = this.ship && this.ships && (-1 !== this.ships.indexOf(this.ship));
-        // settings.debug && console.log('<isExistingShip', existing);
+        // settings.debug.trace && console.log('<isExistingShip', existing);
         return existing;
     };
 
     ShipController.prototype.fixFocus = function fixFocus() {
-        // settings.debug && console.log('fixFocus');
+        // settings.debug.trace && console.log('fixFocus');
         var shipName = document.getElementById('ship-name');
         if (shipName) {
             shipName.focus();

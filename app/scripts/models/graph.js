@@ -13,13 +13,13 @@ define(['settings', './bouy', './edge', 'lodash'], function (settings, Bouy, Edg
     }
 
     Graph.prototype.clear = function clear() {
-        // settings.debug && console.log('Graph.clear');
+        // settings.debug.trace && console.log('Graph.clear');
         this.vertices = [];
         this.edges = [];
     };
 
     Graph.prototype.addVertex = function addVertex(vertex) {
-        // settings.debug && console.log('Graph.addVertex', vertex);
+        // settings.debug.trace && console.log('Graph.addVertex', vertex);
         var that = this;
         if (angular.isArray(vertex)) {
             vertex.forEach(function addVertexElement(vertex) {
@@ -36,7 +36,7 @@ define(['settings', './bouy', './edge', 'lodash'], function (settings, Bouy, Edg
     };
 
     Graph.prototype.addEdge = function addEdge(edge) {
-        // settings.debug && console.log('Graph.addEdge', edge);
+        // settings.debug.trace && console.log('Graph.addEdge', edge);
         var that = this;
         if (angular.isArray(edge)) {
             edge.forEach(function addEdgeElement(edge) {
@@ -48,7 +48,7 @@ define(['settings', './bouy', './edge', 'lodash'], function (settings, Bouy, Edg
                 var start = this.findVertexById(edge.start);
                 var end = this.findVertexById(edge.end);
                 if (!start || !end) {
-                    // settings.debug && console.log('Edge not added: No id');
+                    // settings.debug.trace && console.log('Edge not added: No id');
                     return this;
                 }
                 edge = new Edge(
@@ -75,7 +75,7 @@ define(['settings', './bouy', './edge', 'lodash'], function (settings, Bouy, Edg
     };
 
     Graph.prototype.findVertexById = function findVertexById(vertexId) {
-        // settings.debug && console.log('Graph.findVertexById', vertexId);
+        // settings.debug.trace && console.log('Graph.findVertexById', vertexId);
         var found = this.vertices.filter(function filterOnId(vertex) {
             return vertexId === vertex._id;
         });
@@ -85,7 +85,7 @@ define(['settings', './bouy', './edge', 'lodash'], function (settings, Bouy, Edg
     };
 
     Graph.prototype.findVertexByName = function findVertexByName(vertexName) {
-        // settings.debug && console.log('Graph.findVertexByName', vertexName);
+        // settings.debug.trace && console.log('Graph.findVertexByName', vertexName);
         var found = this.vertices.filter(function filterOnName(vertex) {
             return vertexName === vertex.name;
         });
@@ -95,7 +95,7 @@ define(['settings', './bouy', './edge', 'lodash'], function (settings, Bouy, Edg
     };
 
     Graph.prototype.countEdges = function countEdges(start, end) {
-        // settings.debug && console.log('Graph.countEdges', start, end);
+        // settings.debug.trace && console.log('Graph.countEdges', start, end);
         var count = this.edges.reduce(function countMatchingEdged(count, edge) {
             if (edge.start === start._id && edge.end === end._id) {
                 return count + 1;
@@ -106,7 +106,7 @@ define(['settings', './bouy', './edge', 'lodash'], function (settings, Bouy, Edg
     };
 
     Graph.prototype.getChildren = function getChildren(vertex) {
-        // settings.debug && console.log('Graph.getChildren', vertex);
+        // settings.debug.trace && console.log('Graph.getChildren', vertex);
         var children = [];
         this.edges.forEach(function getChild(edge) {
             if (edge.start === vertex) {
@@ -117,7 +117,7 @@ define(['settings', './bouy', './edge', 'lodash'], function (settings, Bouy, Edg
     };
 
     Graph.prototype.getParents = function getParents(vertex) {
-        // settings.debug && console.log('Graph.getParents', vertex);
+        // settings.debug.trace && console.log('Graph.getParents', vertex);
         var parents = [];
         this.edges.forEach(function getChild(edge) {
             if (edge.start === vertex) {
@@ -128,21 +128,21 @@ define(['settings', './bouy', './edge', 'lodash'], function (settings, Bouy, Edg
     };
 
     Graph.prototype.getEdgesTo = function getEdgesTo(vertex) {
-        // settings.debug && console.log('Graph.getEdgesTo', vertex);
+        // settings.debug.trace && console.log('Graph.getEdgesTo', vertex);
         return this.edges.filter(function filterTo(edge) {
             return edge.end === vertex;
         });
     };
 
     Graph.prototype.getEdgesFrom = function getEdgesFrom(vertex) {
-        // settings.debug && console.log('Graph.getEdgesFrom', vertex);
+        // settings.debug.trace && console.log('Graph.getEdgesFrom', vertex);
         return this.edges.filter(function filterTo(edge) {
             return edge.start === vertex;
         });
     };
 
     Graph.prototype.getEdgesToAndFrom = function getEdgesToAndFrom(vertex) {
-        // settings.debug && console.log('Graph.getEdgesToAndFrom', vertex);
+        // settings.debug.trace && console.log('Graph.getEdgesToAndFrom', vertex);
         var to = this.getEdgesTo(vertex);
         var from = this.getEdgesFrom(vertex);
         return to.concat(from);

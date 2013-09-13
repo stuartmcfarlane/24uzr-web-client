@@ -3,18 +3,18 @@ define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'lodash
     'use strict';
 
     GraphAlgorithms.prototype.dsl = function dsl(graph, start, end, costAvailable, costFn, pathSoFar, maxEdgeRepeats) {
-        settings.debug && console.log('>dsl: ' + start.name + ' - ' + end.name + ' : ' + costAvailable/3600 + ' hrs');
+        settings.debug.dsl && console.log('>dsl: ' + start.name + ' - ' + end.name + ' : ' + costAvailable/3600 + ' hrs');
         var paths = [];
         var that = this;
 
         if (costAvailable < 0 || costAvailable === NaN) {
-            settings.debug && console.log('<dsl: exhausted', start.name);
+            settings.debug.dsl && console.log('<dsl: exhausted', start.name);
             pathSoFar.pop();
             return undefined;
         }
         
         if (start === end) {
-            settings.debug && console.log('<dsl: found', start.name, end.name);
+            settings.debug.dsl && console.log('<dsl: found', start.name, end.name);
             var path = new Path();
             path.addVertex(start);
             pathSoFar.pop();
@@ -30,7 +30,7 @@ define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'lodash
                 }
             }
             if (count > maxEdgeRepeats) {
-                settings.debug && console.log('<dsl: leg limit reached: ' + from + ' - ' + to);
+                settings.debug.dsl && console.log('<dsl: leg limit reached: ' + from + ' - ' + to);
                 pathSoFar.pop();
                 return undefined;
             }
@@ -39,33 +39,33 @@ define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'lodash
         var children = graph.getChildren(start);
         var allChildPaths = children.map(function childPaths(child) {
             var cost = costFn({start: start, end: child}, costAvailable);
-            settings.debug && console.log(' dsl: '+start.name+' -> '+child.name+' : '+GraphAlgorithms.prototype.edgeLength({start: start, end: child})+' m, ' +cost/3600+' hrs');
-            settings.debug && console.log(' dsl: cost', cost/3600, costAvailable/3600);
+            settings.debug.dsl && console.log(' dsl: '+start.name+' -> '+child.name+' : '+GraphAlgorithms.prototype.edgeLength({start: start, end: child})+' m, ' +cost/3600+' hrs');
+            settings.debug.dsl && console.log(' dsl: cost', cost/3600, costAvailable/3600);
             pathSoFar.push(child._id);
             return that.dsl.call(that, graph, child, end, costAvailable - cost, costFn, pathSoFar, maxEdgeRepeats);
         });
-        settings.debug && console.log('dsl: allChildPaths', start.name, costAvailable, allChildPaths);
+        settings.debug.dsl && console.log('dsl: allChildPaths', start.name, costAvailable, allChildPaths);
         allChildPaths = allChildPaths
         .filter(function filterChildren(childPaths) {
             // remove dead paths
             return childPaths !== undefined;
         });
-        settings.debug && console.log('dsl: allChildPaths filtered', start.name, costAvailable, allChildPaths);
+        settings.debug.dsl && console.log('dsl: allChildPaths filtered', start.name, costAvailable, allChildPaths);
         if (!allChildPaths.length) {
-            settings.debug && console.log('<dsl: no child paths');
+            settings.debug.dsl && console.log('<dsl: no child paths');
             return undefined;
         }
 
         allChildPaths.forEach(function buildPath(childPaths) {
-            settings.debug && console.log('buildPath', start.name, end.name, childPaths);
+            settings.debug.dsl && console.log('buildPath', start.name, end.name, childPaths);
             childPaths.forEach(function expandChild(childPath) {
-                settings.debug && console.log('expandChildPaths', start.name, end.name, childPath);
+                settings.debug.dsl && console.log('expandChildPaths', start.name, end.name, childPath);
                 paths.push(childPath.prependVertex(start));
             });
         });
-        settings.debug && console.log('dsl: paths mapped', start.name, costAvailable, paths);
+        settings.debug.dsl && console.log('dsl: paths mapped', start.name, costAvailable, paths);
 
-        settings.debug && console.log('<dsl', paths);
+        settings.debug.dsl && console.log('<dsl', paths);
         pathSoFar.pop();
         return paths;
     };

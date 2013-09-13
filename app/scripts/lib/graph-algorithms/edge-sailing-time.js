@@ -10,7 +10,7 @@ define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'lodash
         return function edgeSailingTime(edge, time) {
             var distance = GraphAlgorithms.prototype.edgeLength(edge);
             var velocity = speed(edge, time);
-            settings.debug && console.log(edge.start.name+' -> '+edge.end.name+': '+distance+' m, '+velocity + ' m/s');
+            settings.debug.trace && console.log(edge.start.name+' -> '+edge.end.name+': '+distance+' m, '+velocity + ' m/s');
             return distance / velocity;
         };
     };

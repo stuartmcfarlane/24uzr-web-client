@@ -7,8 +7,11 @@ define([], function() {
             target: 'sigma-canvas'
         },
 
-        // debug: true,
-        debug: false,
+        debug: {
+            trace: false,
+            dsl: false,
+            event: false
+        },
 
         graph: {
             vertexInCardinality: 1,

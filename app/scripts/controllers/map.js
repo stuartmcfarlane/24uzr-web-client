@@ -70,11 +70,11 @@ define(['app',
     // graphAdapter events
 
     MapController.prototype.onActiveBouyChanged = function onActiveBouyChanged() {
-        settings.debug && console.log('onActiveBouyChanged');
+        settings.debug.event && console.log('onActiveBouyChanged');
     };
 
     MapController.prototype.onActiveLegChanged = function onActiveLegChanged() {
-        settings.debug && console.log('onActiveLegChanged');
+        settings.debug.event && console.log('onActiveLegChanged');
     };
 
     // model change events
@@ -82,7 +82,7 @@ define(['app',
     // button events
 
     MapController.prototype.onAddBouyPressed = function onAddBouyPressed(bouy) {
-        settings.debug && console.log('onAddBouyPressed', bouy);
+        settings.debug.event && console.log('onAddBouyPressed', bouy);
         if (bouy === undefined) {
             bouy = new Bouy(this.active.bouy);
             this.graphAdapter.setActiveBouy(undefined);
@@ -95,7 +95,7 @@ define(['app',
     };
 
     MapController.prototype.onEditBouyPressed = function onEditBouyPressed(bouy) {
-        settings.debug && console.log('onEditBouyPressed', bouy);
+        settings.debug.event && console.log('onEditBouyPressed', bouy);
         if (bouy === undefined) {
             bouy = new Bouy(this.active.bouy);
         }
@@ -108,7 +108,7 @@ define(['app',
 
     MapController.prototype.onDeleteBouyPressed = function onDeleteBouyPressed() {
         var bouy = this.active.bouy;
-        settings.debug && console.log('onDeleteBouyPressed', bouy);
+        settings.debug.event && console.log('onDeleteBouyPressed', bouy);
         if (bouy) {
             var toAndFrom = this.graph.getEdgesToAndFrom(bouy);
             var scope = this.scope;
@@ -135,18 +135,18 @@ define(['app',
     };
 
     MapController.prototype.onDeselectBouyPressed = function onDeselectBouyPressed() {
-        settings.debug && console.log('onDeselectBouyPressed');
+        settings.debug.event && console.log('onDeselectBouyPressed');
         this.active.bouy = undefined;
         this.fixFocus();
     };
     
     MapController.prototype.onAddSingleLegPressed = function onAddSingleLegPressed() {
-        settings.debug && console.log('onAddSingleLegPressed');
+        settings.debug.event && console.log('onAddSingleLegPressed');
         this.addLeg(this.active.leg.start, this.active.leg.end);
     };
 
     MapController.prototype.onAddDuplexLegPressed = function onAddDuplexLegPressed() {
-        settings.debug && console.log('onAddDuplexLegPressed');
+        settings.debug.event && console.log('onAddDuplexLegPressed');
         this.addLeg(this.active.leg.start, this.active.leg.end);
         this.addLeg(this.active.leg.end, this.active.leg.start);
     };
@@ -154,13 +154,13 @@ define(['app',
     // button state helpers
 
     MapController.prototype.isExistingNode = function isExistingNode(node) {
-        settings.debug && console.log('isExistingNode', node);
+        settings.debug.trace && console.log('isExistingNode', node);
         var id = node && node.id || this.active.bouy && this.active.bouy._id || undefined;
         return !!this.graph.findVertexById(id);
     };
 
     MapController.prototype.isAddingNode = function isAddingNode() {
-        settings.debug && console.log('isAddingNode');
+        settings.debug.trace && console.log('isAddingNode');
         return (this.active.bouy !== undefined &&
             !this.isExistingNode(this.active.bouy) &&
             this.active.bouy.name !== undefined &&
@@ -177,7 +177,7 @@ define(['app',
     // api completion events
 
     MapController.prototype.onBouysLoaded = function onBouysLoaded(event, bouys) {
-        settings.debug && console.log('onBouysLoaded', event, bouys);
+        settings.debug.event && console.log('onBouysLoaded', event, bouys);
         var map = event.currentScope.map;
         if (!angular.isArray(bouys)) {
             bouys = [bouys];
@@ -191,7 +191,7 @@ define(['app',
     };
 
     MapController.prototype.onBouysCreated = function onBouysCreated(event, bouys) {
-        settings.debug && console.log('onBouysCreated', event, bouys);
+        settings.debug.event && console.log('onBouysCreated', event, bouys);
         var map = event.currentScope.map;
         if (!angular.isArray(bouys)) {
             bouys = [bouys];
@@ -205,7 +205,7 @@ define(['app',
     };
 
     MapController.prototype.onBouysUpdated = function onBouysUpdated(event, bouys) {
-        settings.debug && console.log('onBouysUpdated', event, bouys);
+        settings.debug.event && console.log('onBouysUpdated', event, bouys);
         var map = event.currentScope.map;
         if (!angular.isArray(bouys)) {
             bouys = [bouys];
@@ -218,11 +218,11 @@ define(['app',
     };
 
     MapController.prototype.onBouysDeleted = function onBouysDeleted(event, bouys) {
-        settings.debug && console.log('onBouysDeleted', event, bouys);
+        settings.debug.event && console.log('onBouysDeleted', event, bouys);
     };
 
     MapController.prototype.onLegsLoaded = function onLegsLoaded(event, legs) {
-        settings.debug && console.log('onLegsLoaded', event, legs);
+        settings.debug.event && console.log('onLegsLoaded', event, legs);
         var map = event.currentScope.map;
         if (!angular.isArray(legs)) {
             legs = [legs];
@@ -239,7 +239,7 @@ define(['app',
     };
 
     MapController.prototype.onLegsCreated = function onLegsCreated(event, legs) {
-        settings.debug && console.log('onLegsCreated', event, legs);
+        settings.debug.event && console.log('onLegsCreated', event, legs);
         var map = event.currentScope.map;
         if (!angular.isArray(legs)) {
             legs = [legs];
@@ -256,11 +256,11 @@ define(['app',
     };
 
     MapController.prototype.onLegsDeleted = function onLegsDeleted(event, legs) {
-        settings.debug && console.log('onLegsDeleted', event, legs);
+        settings.debug.event && console.log('onLegsDeleted', event, legs);
     };
 
     MapController.prototype.fixFocus = function fixFocus() {
-        settings.debug && console.log('fixFocus');
+        settings.debug.trace && console.log('fixFocus');
         var bouyName = document.getElementById('bouy-name');
         if (bouyName) {
             bouyName.focus();
@@ -270,19 +270,19 @@ define(['app',
     // graph adapter events
 
     MapController.prototype.onBouySelected = function onBouySelected(bouy) {
-        settings.debug && console.log('onBouySelected', bouy);
+        settings.debug.event && console.log('onBouySelected', bouy);
         this.scope.$apply();
     };
 
     // helpers
 
     MapController.prototype.canAddLeg = function canAddLeg(start, end) {
-        settings.debug && console.log('canAddLeg', start, end);
+        settings.debug.trace && console.log('canAddLeg', start, end);
         return (0 === this.graph.countEdges(start, end));
     };
 
     MapController.prototype.addLeg = function addLeg(startBouy, endBouy) {
-        settings.debug && console.log('addLeg', startBouy, endBouy);
+        settings.debug.trace && console.log('addLeg', startBouy, endBouy);
         if (startBouy && endBouy) {
             if (this.canAddLeg(this.active.leg.start, this.active.leg.end)) { 
                 var scope = this.scope;

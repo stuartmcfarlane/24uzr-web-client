@@ -10,7 +10,7 @@ define(['settings', 'lib/convert', '../graph-algorithms', 'models/path', 'models
     };
 
     GraphAlgorithms.prototype.pathsWithTime = function pathsWithTime(graph, start, end, options) {
-        settings.debug && console.log('>pathsWithTime', graph, start, end, options);
+        settings.debug.trace && console.log('>pathsWithTime', graph, start, end, options);
         options = _.extend({}, defaultOptions, options || {});
         if (!options.cost) {
             options.cost = GraphAlgorithms.prototype.makeEdgeSailingTime(options.speed);
@@ -19,7 +19,7 @@ define(['settings', 'lib/convert', '../graph-algorithms', 'models/path', 'models
         if (!paths) {
             paths = [];
         }
-        settings.debug && console.log('<pathsWithTime', paths);
+        settings.debug.trace && console.log('<pathsWithTime', paths);
         return paths;
     };
 

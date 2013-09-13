@@ -62,7 +62,6 @@ define(['app',
 
         this.apiService.query('ships')
         .then(function shipsQuerySuccess(ships) {
-            console.log('shipsQuerySuccess', ships);
             $scope.$broadcast('ship:queried', ships);
         });
 
@@ -71,45 +70,46 @@ define(['app',
 
     // graphAdapter events
 
-    PlannerController.prototype.onActiveBouyChanged = function onActiveBouyChanged() {
-        settings.debug && console.log('onActiveBouyChanged');
+    PlannerController.prototype.onBouySelected = function onBouySelected() {
+        settings.debug.event && console.log('onBouySelected');
+        this.findAllPaths();
     };
 
     PlannerController.prototype.onActiveLegChanged = function onActiveLegChanged() {
-        settings.debug && console.log('onActiveLegChanged');
+        settings.debug.event && console.log('onActiveLegChanged');
     };
 
     // model change events
 
     PlannerController.prototype.onPathLengthChanged = function onPathLengthChanged() {
-        settings.debug && console.log('onPathLengthChanged');
+        settings.debug.event && console.log('onPathLengthChanged');
         this.findAllPaths();
     };
 
     PlannerController.prototype.onRaceTimeChanged = function onRaceTimeChanged() {
-        settings.debug && console.log('onRaceTimeChanged');
+        settings.debug.event && console.log('onRaceTimeChanged');
         this.findAllPaths();
     };
 
     PlannerController.prototype.onWindChanged = function onWindChanged() {
-        settings.debug && console.log('onWindChanged');
+        settings.debug.event && console.log('onWindChanged');
         this.findAllPaths();
     };
 
     // button, hover events
 
     PlannerController.prototype.onClearPathPressed = function onClearPathPressed() {
-        settings.debug && console.log('onClearPathPressed');
+        settings.debug.event && console.log('onClearPathPressed');
         this.graphAdapter.setActivePath();
     };
 
     PlannerController.prototype.onFindPathsPressed = function onFindPathsPressed() {
-        settings.debug && console.log('onFindPathsPressed');
+        settings.debug.event && console.log('onFindPathsPressed');
         this.findAllPaths();
     };
 
     PlannerController.prototype.onHoverPathInList = function onHoverPathInList(path) {
-        settings.debug && console.log('onHoverPathInList', path);
+        settings.debug.event && console.log('onHoverPathInList', path);
         var planner = this;
         var foundPath;
         if (path && path._id) {
@@ -133,13 +133,13 @@ define(['app',
     // button state helpers
 
     PlannerController.prototype.isExistingNode = function isExistingNode(node) {
-        settings.debug && console.log('isExistingNode', node);
+        settings.debug.trace && console.log('isExistingNode', node);
         var id = node && node.id || this.active.bouy && this.active.bouy._id || undefined;
         return !!this.graph.findVertexById(id);
     };
 
     PlannerController.prototype.isAddingNode = function isAddingNode() {
-        settings.debug && console.log('isAddingNode');
+        settings.debug.trace && console.log('isAddingNode');
         return (this.active.bouy !== undefined &&
             !this.isExistingNode(this.active.bouy) &&
             this.active.bouy.name !== undefined &&
@@ -156,7 +156,7 @@ define(['app',
     // api completion events
 
     PlannerController.prototype.onBouysLoaded = function onBouysLoaded(event, bouys) {
-        settings.debug && console.log('onBouysLoaded', event, bouys);
+        settings.debug.event && console.log('onBouysLoaded', event, bouys);
         var planner = event.currentScope.planner;
         if (!angular.isArray(bouys)) {
             bouys = [bouys];
@@ -171,7 +171,7 @@ define(['app',
     };
 
     PlannerController.prototype.onLegsLoaded = function onLegsLoaded(event, legs) {
-        settings.debug && console.log('onLegsLoaded', event, legs);
+        settings.debug.event && console.log('onLegsLoaded', event, legs);
         var planner = event.currentScope.planner;
         if (!angular.isArray(legs)) {
             legs = [legs];
@@ -188,7 +188,7 @@ define(['app',
     };
 
     PlannerController.prototype.onShipsLoaded = function onShipsLoaded(event, ships) {
-        settings.debug && console.log('onShipsLoaded', event, ships);
+        settings.debug.event && console.log('onShipsLoaded', event, ships);
         var planner = event.currentScope.planner;
         if (!angular.isArray(ships)) {
             ships = [ships];
@@ -244,13 +244,14 @@ define(['app',
         planner.calculating = true;
         setTimeout(function allPaths() {
             planner.scope.$apply(function applyWrapper() {
-                settings.debug && console.log('doing work');
+                settings.debug.trace && console.log('doing work');
                 var perfStartTime = performance.now();
                 var paths;
-                var raceTimeSeconds = planner.raceTime * 60 * 60;
                 if (planner.active.leg && planner.active.leg.start && planner.active.leg.end && 
                     planner.windAngle && planner.windKnots &&
-                    planner.ship) {
+                    planner.ship && planner.raceTime)
+                {
+                    var raceTimeSeconds = planner.raceTime * 60 * 60;
                     paths = planner.graphAlgorithms.pathsWithTime(
                         planner.graph,
                         planner.active.leg.start,
@@ -259,9 +260,10 @@ define(['app',
                             time: raceTimeSeconds,
                             speed: speed
                         });
-                    settings.debug && console.log('got paths');
+                    settings.debug.trace && console.log('got paths');
                     var edgeHistogram = planner.graphAlgorithms.edgeHistogram(paths);
                     planner.graphAdapter.setEdgeHistogram(edgeHistogram);
+                    planner.graphAdapter.showEdgeHistogram();
                     paths = planner.graphAlgorithms.lengthSortPaths(paths);
                     var pathIdx = 0;
                     paths = paths.map(function pathToObject(path) {

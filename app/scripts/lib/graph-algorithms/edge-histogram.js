@@ -7,7 +7,7 @@ define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'lodash
     };
 
     GraphAlgorithms.prototype.edgeHistogram = function edgeHistogram(paths, options) {
-        settings.debug && console.log('>edgeHistogram', paths, options);
+        settings.debug.trace && console.log('>edgeHistogram', paths, options);
         options = _.extend({}, defaultOptions, options || {});
         var histogram = {};
         var nextId = 0;
@@ -15,7 +15,7 @@ define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'lodash
         if (paths) {
             paths.forEach(function samplePath(path) {
                 path.edges.forEach(function sampleEdge(edge) {
-                    settings.debug && console.log(' edgeHistogram: edge', edge);
+                    settings.debug.trace && console.log(' edgeHistogram: edge', edge);
                     var key = edge.start._id + edge.end._id;
                     if (!histogram[key]) {
                         histogram[key] = new Edge({
@@ -24,10 +24,10 @@ define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'lodash
                             end: edge.end
                         });
                         histogram[key].count = 0;
-                        settings.debug && console.log(' edgeHistogram: count', key, histogram[key].count);
+                        settings.debug.trace && console.log(' edgeHistogram: count', key, histogram[key].count);
                     }
                     histogram[key].count++;
-                    settings.debug && console.log(' edgeHistogram: count', key, histogram[key].count);
+                    settings.debug.trace && console.log(' edgeHistogram: count', key, histogram[key].count);
                 });
             });
         }
@@ -37,7 +37,7 @@ define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'lodash
                 edges.push(histogram[key]);
             }
         }
-        settings.debug && console.log('<edgeHistogram', edges);
+        settings.debug.trace && console.log('<edgeHistogram', edges);
         return edges;
     };
 
