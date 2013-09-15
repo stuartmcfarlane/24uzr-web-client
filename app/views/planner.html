@@ -69,7 +69,7 @@
                 <span ng-show="planner.paths.length">(Found {{planner.paths.length}} paths) {{planner.findAllPathsTime}} ms</span>
                 <span ng-show="planner.calculating">searching...</span>
             </div>
-            <div class="functions panel-body">
+            <div class="functions panel-body pre-scrollable">
                 <table class="col-md-12 table-striped table-bordered table-condensed table-hover"
                     ng-show="planner.paths && planner.paths.length">
                     <thead>
@@ -96,7 +96,7 @@
                 <button class="btn btn-warning"
                     ng-click="planner.onDeselectPath()">Deselect</button>
             </div>
-            <div class="functions panel-body">
+            <div class="functions panel-body pre-scrollable">
                 <table class="col-md-12 table-striped table-bordered table-condensed table-hover">
                     <thead>
                         <tr>
@@ -108,7 +108,7 @@
                     <tbody>
                         <tr>
                             <th>Total</th>
-                            <td>{{planner.selectedPath.getLengthNauticalMiles() | number:2}}</td>
+                            <td>{{planner.selectedPath.lengthNauticalMiles | number:2}}</td>
                             <td>{{planner.selectedPath.getSailingTime() | number:2}}</td>
                         </tr>
                         <tr ng-mouseenter="planner.onHoverLegInList(leg)"
