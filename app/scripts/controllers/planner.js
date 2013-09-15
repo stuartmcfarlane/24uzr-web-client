@@ -33,7 +33,7 @@ define(['app',
         };
         this.setectedPath = undefined;
         this.findAllPathsTime = 0;
-        this.raceTime = settings.raceTime;
+        this.raceTime = settings.race.raceTime;
         this.windAngle = 45;
         this.windKnots = 20;
         this.ship = undefined;
