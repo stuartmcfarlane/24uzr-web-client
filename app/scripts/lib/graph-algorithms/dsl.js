@@ -29,7 +29,7 @@ define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'lodash
                     count++;
                 }
             }
-            if (count > maxEdgeRepeats) {
+            if (count >= maxEdgeRepeats) {
                 settings.debug.dsl && console.log('<dsl: leg limit reached: ' + from + ' - ' + to);
                 pathSoFar.pop();
                 return undefined;
