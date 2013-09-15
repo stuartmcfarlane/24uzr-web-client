@@ -10,7 +10,7 @@
     "Daniel Young <daniel@clevertech.biz>",
     "Richard Gustin <richard@clevertech.biz>"
   ],
-  "version": "0.0.1",
+  "version": "0.0.4",
   "dependencies": {
     "filesize": "~1.9.3",
     "optipng-bin": "~0.2.6",
