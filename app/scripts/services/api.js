@@ -22,7 +22,7 @@ define(['settings', 'angular', 'app'],function (settings, angular) {
         return {
 
             get: function (api, id) {
-                settings.debug.trace && console.log('get:' + api, arguments[1]);
+                settings.debug.api && console.log('get:' + api, arguments[1]);
                 var def = $q.defer();
 
                 if (typeof id === 'object') {
@@ -31,7 +31,7 @@ define(['settings', 'angular', 'app'],function (settings, angular) {
 
                 $http.get(makeUrl(api))
                 .success(function (res) {
-                    settings.debug.trace && console.log('<get', res);
+                    settings.debug.api && console.log('<get', res);
                     def.resolve(res);
                 }).error(function (err) {
                     def.reject(err);
@@ -41,7 +41,7 @@ define(['settings', 'angular', 'app'],function (settings, angular) {
             },
 
             query: function (api, id, cb) {
-                settings.debug.trace && console.log('query:' + api, arguments[1]);
+                settings.debug.api && console.log('query:' + api, arguments[1]);
                 if (cb === undefined && typeof id === 'function') {
                     cb = id;
                     id = undefined;
@@ -57,7 +57,7 @@ define(['settings', 'angular', 'app'],function (settings, angular) {
 
                 $http.get(makeUrl(api, id))
                 .success(function (res) {
-                    settings.debug.trace && console.log('<query', res);
+                    settings.debug.api && console.log('<query', res);
                     def.resolve(res);
                 }).error(function (err) {
                     def.reject(err);
@@ -67,7 +67,7 @@ define(['settings', 'angular', 'app'],function (settings, angular) {
             },
 
             create: function (api, object, cb) {
-                settings.debug.trace && console.log('create:' + api, arguments[1]);
+                settings.debug.api && console.log('create:' + api, arguments[1]);
                 if (typeof cb == 'function') {
                     return $http.post(makeUrl(api), object, cb);
                 }
@@ -75,7 +75,7 @@ define(['settings', 'angular', 'app'],function (settings, angular) {
 
                 $http.post(makeUrl(api), object)
                 .success(function (res) {
-                    settings.debug.trace && console.log('<post', res);
+                    settings.debug.api && console.log('<post', res);
                     def.resolve(res);
                 }).error(function (err) {
                     def.reject(err);
@@ -85,7 +85,7 @@ define(['settings', 'angular', 'app'],function (settings, angular) {
             },
 
             update: function (api, object, cb) {
-                settings.debug.trace && console.log('update:' + api, arguments[1]);
+                settings.debug.api && console.log('update:' + api, arguments[1]);
                 if (typeof cb == 'function') {
                     return $http.put(makeUrl(api), object, cb);
                 }
@@ -93,7 +93,7 @@ define(['settings', 'angular', 'app'],function (settings, angular) {
 
                 $http.put(makeUrl(api, object), object)
                 .success(function (res) {
-                    settings.debug.trace && console.log('<put', res);
+                    settings.debug.api && console.log('<put', res);
                     def.resolve(res);
                 }).error(function (err) {
                     def.reject(err);
@@ -103,8 +103,8 @@ define(['settings', 'angular', 'app'],function (settings, angular) {
             },
 
             remove: function (api, object, cb) {
-                settings.debug.trace && console.log('remove:' + api, arguments[1]);
-                settings.debug.trace && console.log('DELETE: ' + makeUrl(api, object));
+                settings.debug.api && console.log('remove:' + api, arguments[1]);
+                settings.debug.api && console.log('DELETE: ' + makeUrl(api, object));
                 if (typeof cb == 'function') {
                     return $http.delete(makeUrl(api), object, cb);
                 }
@@ -116,7 +116,7 @@ define(['settings', 'angular', 'app'],function (settings, angular) {
                 //     url: makeUrl(api, object)
                 // })
                 .success(function (res) {
-                    settings.debug.trace && console.log('<remove', res);
+                    settings.debug.api && console.log('<remove', res);
                     def.resolve(res);
                 }).error(function (err) {
                     def.reject(err);

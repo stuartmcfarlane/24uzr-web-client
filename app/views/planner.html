@@ -14,10 +14,20 @@
         </div>
     </div>
     <div class="col-md-4">
-        <div class="panel panel-default">
+        <div class="panel panel-default"
+            ng-hide="planner.selectedPath">
             <div class="panel-heading">Race conditions</div>
             <div class="functions panel-body">
                 <form class="form-horizontal" role="form">
+                    <div class="offset-md-1 col-md-12">
+                        <div class="form-group input-group">
+                            <input id="race-time" type="text" class="form-control"
+                                placeholder="hours"
+                                ng-model="planner.raceTime"
+                                ng-change="planner.onRaceTimeChanged()">
+                            <label for="race-time" class="input-group-addon">Race time</label>
+                        </div>
+                    </div>
                     <div class="offset-md-1 col-md-12">
                         <div class="form-group input-group">
                             <input id="wind-direction" type="text" class="form-control"
@@ -53,37 +63,71 @@
                 </form>
             </div>
         </div>
-        <div class="panel panel-default">
+        <div class="panel panel-default"
+            ng-hide="planner.selectedPath">
             <div class="panel-heading">Paths
                 <span ng-show="planner.paths.length">(Found {{planner.paths.length}} paths) {{planner.findAllPathsTime}} ms</span>
                 <span ng-show="planner.calculating">searching...</span>
             </div>
             <div class="functions panel-body">
-                <form class="form-horizontal" role="form">
-                    <div class="offset-md-1 col-md-12">
-                        <div class="form-group input-group">
-                            <input id="race-time" type="text" class="form-control"
-                                placeholder="hours"
-                                ng-model="planner.raceTime"
-                                ng-change="planner.onRaceTimeChanged()">
-                            <label for="race-time" class="input-group-addon">Race time</label>
-                        </div>
-                    </div>
-                    <!--button class="btn btn-warning"
-                        ng-click="planner.onClearPathPressed()"> Clear </button>
-                    <button type="submit" class="btn btn-primary"
-                        ng-click="planner.onFindPathsPressed()"> FInd paths </button-->
-                    <div class="offset-md-1 col-md-12" ng-show="planner.paths && planner.paths.length">
-                        <div class="form-group input-group" ng-repeat="path in planner.paths | limitTo:10">
-                            <p class="form-control"
-                                ng-model="path"
-                                ng-mouseenter="planner.onHoverPathInList(path)"
-                                ng-mouseleave="planner.onHoverPathInList()"
-                                ng-click="planner.onClickPathInList(path)"
-                                >{{path.lengthNauticalMiles}}</p>
-                        </div>
-                    </div>
-                </form>
+                <table class="col-md-12 table-striped table-bordered table-condensed table-hover"
+                    ng-show="planner.paths && planner.paths.length">
+                    <thead>
+                        <tr>
+                            <th>Miles</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="path in planner.paths | limitTo:10"
+                            ng-mouseenter="planner.onHoverPathInList(path)"
+                            ng-mouseleave="planner.onHoverPathInList()"
+                            ng-click="planner.onClickPathInList(path)">
+                            <td>{{path.lengthNauticalMiles | number:2}}</td>
+                            <td>{{path.getSailingTime() | number:2}}
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="panel panel-default"
+            ng-show="planner.selectedPath">
+            <div class="panel-heading">Path
+                <button class="btn btn-warning"
+                    ng-click="planner.onDeselectPath()">Deselect</button>
+            </div>
+            <div class="functions panel-body">
+                <table class="col-md-12 table-striped table-bordered table-condensed table-hover">
+                    <thead>
+                        <tr>
+                            <th>Leg</th>
+                            <th>Miles</th>
+                            <th>Hours</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>Total</th>
+                            <td>{{planner.selectedPath.getLengthNauticalMiles() | number:2}}</td>
+                            <td>{{planner.selectedPath.getSailingTime() | number:2}}</td>
+                        </tr>
+                        <tr ng-mouseenter="planner.onHoverLegInList(leg)"
+                            ng-mouseleave="planner.onHoverLegInList()"
+                            ng-click="planner.onClickPathInList(path)">
+                            <td>{{planner.selectedPath.edges[0].start.name}}</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr ng-repeat="leg in planner.selectedPath.edges"
+                            ng-mouseenter="planner.onHoverLegInList(leg)"
+                            ng-mouseleave="planner.onHoverLegInList()"
+                            ng-click="planner.onClickPathInList(path)">
+                            <td>{{leg.end.name}}</td>
+                            <td>{{leg.getLengthNauticalMiles() | number:2}}</td>
+                            <td>{{leg.getSailingTime()}}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

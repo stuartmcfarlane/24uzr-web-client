@@ -1,5 +1,8 @@
 define([], function() {
     return {
+        race: {
+            raceTime: 24
+        },
         api: {
             port: 8080
         },
@@ -10,7 +13,8 @@ define([], function() {
         debug: {
             trace: false,
             dsl: false,
-            event: false
+            event: true,
+            api: false
         },
 
         graph: {
@@ -32,6 +36,7 @@ define([], function() {
             endBouySize: 10,
 
             activePathColor: '#0f0',
+            highlightPathColor: '#f00',
         },
         sigma: {
             drawingProperties: {

@@ -319,6 +319,17 @@ define(['settings', 'models/edge', 'lodash'], function (settings, Edge) {
         this.active.edgeHistogram = edges;
     };
 
+    GraphAdapter.prototype.setHighlightLeg = function setHighlightLeg(leg) {
+        this.sigma.dropEdge('highlightLeg');
+        this.sigma.draw();
+        if (leg) {
+            this.sigma.addEdge('highlightLeg', leg.start._id, leg.end._id, {
+                color: settings.graph.highlightPathColor
+            });
+            this.sigma.draw();
+        }
+    };
+
     function dumpSigma (m, s) {
         s.iterNodes(function(n){ settings.debug.trace && console.log(m, n.label);});
         s.iterEdges(function(e){ 

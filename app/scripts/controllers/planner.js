@@ -31,8 +31,9 @@ define(['app',
             path: undefined,
             edgeHistogram: undefined
         };
+        this.setectedPath = undefined;
         this.findAllPathsTime = 0;
-        this.raceTime = undefined;
+        this.raceTime = settings.raceTime;
         this.windAngle = 45;
         this.windKnots = 20;
         this.ship = undefined;
@@ -108,25 +109,43 @@ define(['app',
         this.findAllPaths();
     };
 
-    PlannerController.prototype.onHoverPathInList = function onHoverPathInList(path) {
-        settings.debug.event && console.log('onHoverPathInList', path);
-        var planner = this;
-        var foundPath;
-        if (path && path._id) {
-            var foundPaths = planner.paths.filter(function pathWithId(somePath) {
-                return somePath._id === path._id;
-            });
-            if (foundPaths) {
-                foundPath = foundPaths[0];
-            }
+    PlannerController.prototype.onClickPathInList = function onClickPathInList(path) {
+        settings.debug.event && console.log('onClickPathInList', path);
+        var foundPath = this.findPath(path);
+        if (foundPath && foundPath !== this.selectedPath) {
+            this.selectedPath = foundPath;
+            this.graphAdapter.setActivePath(foundPath);
+            this.graphAdapter.hideEdgeHistogram();
         }
-        if (foundPath) {
-            planner.graphAdapter.setActivePath(foundPath);
-            planner.graphAdapter.hideEdgeHistogram();
+    };
+
+    PlannerController.prototype.onDeselectPath = function onDeselectPath() {
+        settings.debug.event && console.log('onDeselectPath');
+        this.selectedPath = undefined;
+        this.graphAdapter.setActivePath(undefined);
+        this.graphAdapter.showEdgeHistogram();
+    };
+
+    PlannerController.prototype.onHoverLegInList = function onHoverLegInList(leg) {
+        settings.debug.event && console.log('onHoverLegInList', leg);
+        if (leg) {
+            this.graphAdapter.setHighlightLeg(leg);
         }
         else {
-            planner.graphAdapter.setActivePath(foundPath);
-            planner.graphAdapter.showEdgeHistogram();
+            this.graphAdapter.setHighlightLeg(undefined);
+        }
+    };
+
+    PlannerController.prototype.onHoverPathInList = function onHoverPathInList(path) {
+        settings.debug.event && console.log('onHoverPathInList', path);
+        if (path) {
+            var foundPath = this.findPath(path);
+            this.graphAdapter.setActivePath(foundPath);
+            this.graphAdapter.hideEdgeHistogram();
+        }
+        else if (!this.selectedPath) {
+            this.graphAdapter.setActivePath(undefined);
+            this.graphAdapter.showEdgeHistogram();
         }
     };
 
@@ -203,6 +222,20 @@ define(['app',
     };
 
     // helpers
+
+    PlannerController.prototype.findPath = function findPath(path) {
+        var planner = this;
+        var foundPath;
+        if (path && path._id) {
+            var foundPaths = planner.paths.filter(function pathWithId(somePath) {
+                return somePath._id === path._id;
+            });
+            if (foundPaths) {
+                foundPath = foundPaths[0];
+            }
+        }
+        return foundPath;
+    };
 
     PlannerController.prototype.setStartFinish = function setStartFinish() {
         if (!this.active.leg) {
