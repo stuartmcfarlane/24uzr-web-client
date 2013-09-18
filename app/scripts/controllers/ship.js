@@ -39,13 +39,16 @@ define(['app',
 
     ShipController.prototype.onShipsLoaded = function onShipsLoaded(event, ships) {
         settings.debug.event && console.log('>onShipsLoaded', event, ships);
-        if (!angular.isArray(ships)) {
-            ships = [ships];
+        if (ships) {
+            if (!angular.isArray(ships)) {
+                ships = [ships];
+            }
+            ships = ships.map(function constructShips(ship) {
+                return new Ship(ship);
+            });
+            settings.debug.event && console.log(' onShipsLoaded', ships);
+            event.currentScope.ctrl.ship = ships[0];
         }
-        ships = ships.map(function constructShips(ship) {
-            return new Ship(ship);
-        });
-        settings.debug.event && console.log(' onShipsLoaded', ships);
         event.currentScope.ctrl.ships = ships;
     };
 
