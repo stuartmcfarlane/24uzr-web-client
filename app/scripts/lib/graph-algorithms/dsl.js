@@ -4,29 +4,32 @@ define(['settings', 'models/path', 'models/edge', 'lodash'],
 
         return function dsl(graph, start, end, options) {
 
-            function exhausted(state) {
-                if (state.costAvailable < 0 || isNaN(state.costAvailable)) {
-                    settings.debug.dsl && console.log('exhausted: time\'s up', state.start.name);
-                    return true;
+            var defaultStrategy = {
+                exhausted: function exhaustedDefault(state) {
+                    if (state.costAvailable < 0 || isNaN(state.costAvailable)) {
+                        settings.debug.dsl && console.log('exhausted: time\'s up', state.start.name);
+                        return true;
+                    }
+                },
+                found: function foundDefault(state) {
+                    if (state.start === state.end) {
+                        return true;
+                    }
+                    return false;
+                },
+                childState: function childStateDefault(state, child) {
+                    var cost = 1;
+                    var nextState = _.extend({}, state, {
+                        start: child,
+                        costAvailable: state.costAvailable - cost
+                    });
+
+                    return nextState;
                 }
-            }
-
-            function found(state) {
-                if (state.start === state.end) {
-                    return true;
-                }
-                return false;
-            }
-
-            function childState(state, child) {
-                var cost = 1;
-                var nextState = _.extend({}, state, {
-                    start: child,
-                    costAvailable: state.costAvailable - cost
-                });
-
-                return nextState;
-            }
+            };
+            var defaultInitialState = {
+                costAvailable: 0
+            };
 
             function search(graph, state) {
                 settings.debug.dsl && console.log('>dsl: ', state);
@@ -79,17 +82,11 @@ define(['settings', 'models/path', 'models/edge', 'lodash'],
             }
 
             var defaultOptions = {
-                strategy: {
-                    exhausted: exhausted,
-                    found: found,
-                    childState: childState
-                },
-                state: {
-                    costAvailable: 0
-                }
+                strategy: defaultStrategy,
+                state: defaultInitialState
             };
 
-            options = _.merge({}, defaultOptions, options);
+            options = _.extend({}, defaultOptions, options);
             var state = _.extend({}, options.state, {
                 start: start,
                 end: end

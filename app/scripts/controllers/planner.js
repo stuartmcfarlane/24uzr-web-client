@@ -270,10 +270,10 @@ define(['app',
                 return mps;
             };
         };
-        var speed = makeSpeedFn(this.ship, wind, planner.raceTime);
-
         planner.paths = undefined;
         planner.calculating = true;
+        var raceTimeSeconds = planner.raceTime * 60 * 60;
+        var speed = makeSpeedFn(this.ship, wind, raceTimeSeconds);
         setTimeout(function allPaths() {
             planner.scope.$apply(function applyWrapper() {
                 settings.debug.trace && console.log('doing work');
@@ -283,15 +283,21 @@ define(['app',
                     planner.windAngle && planner.windKnots &&
                     planner.ship && planner.raceTime)
                 {
-                    var raceTimeSeconds = planner.raceTime * 60 * 60;
-                    paths = graphAlgorithms.pathsWithTime(
-                        planner.graph,
+                    var strategy = graphAlgorithms.strategies.strategy24uzrRules;
+                    var state = strategy.initState(
                         planner.active.leg.start,
                         planner.active.leg.end,
-                        {
-                            time: raceTimeSeconds,
-                            speed: speed
-                        });
+                        raceTimeSeconds,
+                        speed
+                    );
+                    paths = graphAlgorithms.dsl(
+                        planner.graph,
+                        planner.active.leg.start,
+                        planner.active.leg.end, {
+                            strategy: strategy,
+                            state: state
+                        }
+                    );
                     settings.debug.trace && console.log('got paths');
                     var edgeHistogram = graphAlgorithms.edgeHistogram(paths);
                     planner.graphAdapter.setEdgeHistogram(edgeHistogram);
