@@ -50,10 +50,10 @@ require([
     'lib/graph-algorithms/dsl',
     'lib/graph-algorithms/random-path',
     'lib/graph-algorithms/shortest-path',
-    'lib/graph-algorithms/paths-with-length',
     'lib/graph-algorithms/paths-with-time',
     'lib/graph-algorithms/edge-histogram',
     'lib/graph-algorithms/length-sort-paths',
+    'lib/graph-algorithms/dsl-strategies/24uzr-rules',
 
     // Models
     'models/point',

@@ -1,11 +1,11 @@
-define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'lodash'],
-    function (settings, GraphAlgorithms, Path, Edge) {
+define(['settings', 'lodash'],
+    function (settings) {
     'use strict';
 
     var defaultOptions = {
     };
 
-    GraphAlgorithms.prototype.lengthSortPaths = function lengthSortPaths(paths, options) {
+    return function lengthSortPaths(paths, options) {
         settings.debug.trace && console.log('>lengthSortPaths', paths, options);
         options = _.extend({}, defaultOptions, options || {});
 
@@ -22,6 +22,4 @@ define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'lodash
         settings.debug.trace && console.log('<lengthSortPaths', paths);
         return paths;
     };
-
-    return GraphAlgorithms;
 });

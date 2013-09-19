@@ -13,7 +13,7 @@ define(['app',
     'models/ship',
     'lib/graph-algorithms'],
 
-    function (app, settings, convert, performance, GraphAdapter, Bouy, Graph, Edge, Ship, GraphAlgorithms) {
+    function (app, settings, convert, performance, GraphAdapter, Bouy, Graph, Edge, Ship, graphAlgorithms) {
     'use strict';
 
     function PlannerController($scope, ApiService, $q) {
@@ -22,7 +22,6 @@ define(['app',
 
         this.apiService = ApiService;
         this.graphAdapter = new GraphAdapter();
-        this.graphAlgorithms = new GraphAlgorithms();
         this.graph = new Graph(settings.graph);
 
         this.active = {
@@ -264,7 +263,7 @@ define(['app',
         var makeSpeedFn = function makeSpeedFn(ship, wind, endTime) {
             return function speed(edge, timeToGo) {
                 var time = endTime - timeToGo;
-                var heading = planner.graphAlgorithms.edgeHeading(edge);
+                var heading = graphAlgorithms.edgeHeading(edge);
                 var windVector = wind(edge.start.location, time);
                 var mps = ship.getSpeed(heading, windVector);
                 settings.debug.trace && console.log('speed: ' + edge.start.name + '->' + edge.end.name + convert.mps2knots(mps) + ' knots');
@@ -285,7 +284,7 @@ define(['app',
                     planner.ship && planner.raceTime)
                 {
                     var raceTimeSeconds = planner.raceTime * 60 * 60;
-                    paths = planner.graphAlgorithms.pathsWithTime(
+                    paths = graphAlgorithms.pathsWithTime(
                         planner.graph,
                         planner.active.leg.start,
                         planner.active.leg.end,
@@ -294,10 +293,10 @@ define(['app',
                             speed: speed
                         });
                     settings.debug.trace && console.log('got paths');
-                    var edgeHistogram = planner.graphAlgorithms.edgeHistogram(paths);
+                    var edgeHistogram = graphAlgorithms.edgeHistogram(paths);
                     planner.graphAdapter.setEdgeHistogram(edgeHistogram);
                     planner.graphAdapter.showEdgeHistogram();
-                    paths = planner.graphAlgorithms.lengthSortPaths(paths);
+                    paths = graphAlgorithms.lengthSortPaths(paths);
                     var pathIdx = 0;
                     paths = paths.map(function pathToObject(path) {
                         ++pathIdx;

@@ -1,12 +1,12 @@
-define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'lodash'],
-    function (settings, GraphAlgorithms, Path, Edge) {
+define(['settings', 'models/path', 'models/edge', 'lodash'],
+    function (settings, Path, Edge) {
     'use strict';
 
     var defaultOptions = {
         _id: settings.edgeHistogram._id
     };
 
-    GraphAlgorithms.prototype.edgeHistogram = function edgeHistogram(paths, options) {
+    return function edgeHistogram(paths, options) {
         settings.debug.trace && console.log('>edgeHistogram', paths, options);
         options = _.extend({}, defaultOptions, options || {});
         var histogram = {};
@@ -40,6 +40,4 @@ define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'lodash
         settings.debug.trace && console.log('<edgeHistogram', edges);
         return edges;
     };
-
-    return GraphAlgorithms;
 });

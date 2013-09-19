@@ -1,8 +1,6 @@
 
-define(['../graph-algorithms', 'models/path', 'models/edge', 'lodash', './dijkstra'], function (GraphAlgorithms, Path, Edge) {
+define(['./dijkstra', 'lodash'], function (dijkstra) {
     'use strict';
 
-    GraphAlgorithms.prototype.shortestPath = GraphAlgorithms.prototype.dijkstra;    
-    
-    return GraphAlgorithms;
+    return dijkstra;    
 });

@@ -1,17 +1,8 @@
-define(['settings', 'lib/convert', 'lib/graph-algorithms/edge-length', 'lib/graph-algorithms/edge-sailing-time', 'lodash'],
-    function (settings, convert, edgeLength, makeEdgeSailingTime) {
-    'use strict';
+define(['settings', 'lib/convert', 'lib/graph-algorithms/edge-length', 'lodash'],
+    function (settings, convert, edgeLength) {
+        'use strict';
 
-    return function pathsWithTime(graph, start, end, options) {
-
-        var defaultOptions = {
-            speed: function speed(edge, time) {
-                return convert.knots2mps(6);
-            },
-            maxEdgeRepeats: 2
-        };
-
-        var strategy = {
+        return {
             exhausted: function exhausted(state) {
                 if (state.costAvailable < 0 || isNaN(state.costAvailable)) {
                     settings.debug.dsl && console.log('exhausted: time\'s up', state.start.name);
@@ -58,25 +49,5 @@ define(['settings', 'lib/convert', 'lib/graph-algorithms/edge-length', 'lib/grap
                 return nextState;
             }
         };
-
-        settings.debug.trace && console.log('>pathsWithTime', graph, start, end, options);
-        options = _.extend({}, defaultOptions, options || {});
-        if (!options.cost) {
-            options.cost = makeEdgeSailingTime(options.speed);
-        }
-        var paths = this.dsl(graph, start, end, {
-            strategy: strategy,
-            state: {
-                maxEdgeRepeats: options.maxEdgeRepeats,
-                costAvailable: options.time,
-                pathSoFar: []
-            }
-        });
-        if (!paths) {
-            paths = [];
-        }
-        settings.debug.trace && console.log('<pathsWithTime', paths);
-        return paths;
-    };
-
-});
+    }
+);

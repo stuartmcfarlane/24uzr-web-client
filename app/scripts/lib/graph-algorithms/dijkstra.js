@@ -23,18 +23,18 @@
  *
  */
 
-define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'lodash'], 
-    function (settings, GraphAlgorithms, Path, Edge) {
+define(['settings', 'models/path', 'lib/graph-algorithms/edge-length', 'lodash'], 
+    function (settings, Path, edgeLength) {
     'use strict';
 
     var defaultOptions = {
         maxLength: 100,
         maxAttempts: 10,
-        cost: GraphAlgorithms.prototype.edgeLength
+        cost: edgeLength
 
     };
 
-    GraphAlgorithms.prototype.dijkstra = function dijkstra(graph, start, end, options) {
+    return function dijkstra(graph, start, end, options) {
         
         settings.debug.trace && console.log('>dijkstra', graph, start, end, options);
         options = _.extend({}, defaultOptions, options || {});
@@ -106,6 +106,4 @@ define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'lodash
         settings.debug.trace && console.log('<dijkstra', path);
         return path;
     };
-
-    return GraphAlgorithms;
 });

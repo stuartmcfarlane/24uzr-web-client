@@ -1,4 +1,4 @@
-define(['../graph-algorithms', 'models/path', 'lodash'], function (GraphAlgorithms, Path) {
+define([ 'models/path', 'lodash'], function (Path) {
     'use strict';
 
     var defaultOptions = {
@@ -6,7 +6,7 @@ define(['../graph-algorithms', 'models/path', 'lodash'], function (GraphAlgorith
         maxAttempts: 10
     };
 
-    GraphAlgorithms.prototype.randomPath = function randomPath(graph, start, end, options) {
+    return function randomPath(graph, start, end, options) {
         options = _.extend({}, defaultOptions, options || {});
 
         var path;
@@ -26,6 +26,4 @@ define(['../graph-algorithms', 'models/path', 'lodash'], function (GraphAlgorith
         }
         return path;
     };
-
-    return GraphAlgorithms;
 });

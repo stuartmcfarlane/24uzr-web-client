@@ -1,8 +1,8 @@
-define(['lib/convert', '../graph-algorithms'],
-    function (convert, GraphAlgorithms) {
+define(['lib/convert'],
+    function (convert) {
     'use strict';
 
-    GraphAlgorithms.prototype.edgeLength = function edgeLength(edge) {
+    return function edgeLength(edge) {
 
         var lat1 = edge.start.location.lat;
         var lon1 = edge.start.location.lon;
@@ -24,12 +24,4 @@ define(['lib/convert', '../graph-algorithms'],
 
         return d;
     };
-
-    // GraphAlgorithms.prototype.edgeLength = function edgeLength(edge) {
-    //     var dx = edge.end.location.x - edge.start.location.x;
-    //     var dy = edge.end.location.y - edge.start.location.y;
-    //     return Math.sqrt(dx*dx + dy*dy);
-    // };
-
-    return GraphAlgorithms;
 });

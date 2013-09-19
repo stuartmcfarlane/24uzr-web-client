@@ -1,8 +1,8 @@
-define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'lodash'],
-    function (settings, GraphAlgorithms, Path, Edge) {
+define(['settings', 'models/path', 'models/edge', 'lodash'],
+    function (settings, Path, Edge) {
         'use strict';
 
-        GraphAlgorithms.prototype.dsl = function dsl(graph, start, end, options) {
+        return function dsl(graph, start, end, options) {
 
             function exhausted(state) {
                 if (state.costAvailable < 0 || isNaN(state.costAvailable)) {
@@ -97,8 +97,6 @@ define(['settings', '../graph-algorithms', 'models/path', 'models/edge', 'lodash
 
             return search(graph, state);
 
-        }
-
-        return GraphAlgorithms;
+        };
     }
 );

@@ -1,4 +1,14 @@
-define(['lib/convert', 'models/point', 'lib/graph-algorithms'], function (convert, Point, GraphAlgorithms) {
+define([
+    'lib/convert',
+    'models/point',
+    'lib/graph-algorithms/edge-length',
+    'lib/graph-algorithms/edge-heading'
+], function (
+    convert,
+    Point,
+    edgeLength,
+    edgeHeading)
+{
     'use strict';
 
     function Edge (edge) {
@@ -8,7 +18,7 @@ define(['lib/convert', 'models/point', 'lib/graph-algorithms'], function (conver
     }
 
     Edge.prototype.getLengthMeters = function getLengthMeters() {
-        return GraphAlgorithms.prototype.edgeLength(this);
+        return edgeLength(this);
     };
 
     Edge.prototype.getLengthNauticalMiles = function getLengthNauticalMiles() {
@@ -16,7 +26,7 @@ define(['lib/convert', 'models/point', 'lib/graph-algorithms'], function (conver
     };
 
     Edge.prototype.getHeading = function getHeading() {
-        return GraphAlgorithms.prototype.edgeHeading(this);
+        return edgeHeading(this);
     };
 
     return Edge;
