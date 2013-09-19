@@ -267,7 +267,7 @@ define(['app',
                 var heading = planner.graphAlgorithms.edgeHeading(edge);
                 var windVector = wind(edge.start.location, time);
                 var mps = ship.getSpeed(heading, windVector);
-                console.log('speed: ' + edge.start.name + '->' + edge.end.name + convert.mps2knots(mps) + ' knots');
+                settings.debug.trace && console.log('speed: ' + edge.start.name + '->' + edge.end.name + convert.mps2knots(mps) + ' knots');
                 return mps;
             };
         };

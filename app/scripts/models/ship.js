@@ -37,7 +37,7 @@ define(['settings', 'lib/convert'], function (settings, convert) {
         else if (angle <= 110) knots = this.speed[bft][90];
         else if (angle <= 155) knots = this.speed[bft][135];
         else knots = this.speed[bft][180];
-        console.log('getSpeed: ' + angle + ' deg, ' + bft + ' bft');
+        settings.debug.trace && console.log('getSpeed: ' + angle + ' deg, ' + bft + ' bft');
         return knots;
     };
 

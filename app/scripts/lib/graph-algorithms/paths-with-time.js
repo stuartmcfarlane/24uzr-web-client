@@ -15,7 +15,14 @@ define(['settings', 'lib/convert', '../graph-algorithms', 'models/path', 'models
         if (!options.cost) {
             options.cost = GraphAlgorithms.prototype.makeEdgeSailingTime(options.speed);
         }
-        var paths = this.dsl(graph, start, end, options.time, options.cost, [], options.maxEdgeRepeats);
+        var paths = this.dsl(graph, {
+            start: start,
+            end: end,
+            costAvailable: options.time,
+            costFn: options.cost,
+            pathSoFar: [],
+            maxEdgeRepeats: options.maxEdgeRepeats
+        });
         if (!paths) {
             paths = [];
         }
