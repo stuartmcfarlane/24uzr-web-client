@@ -7,7 +7,7 @@ define(['lib/convert'],
             var lon1 = edge.start.location.lon;
             var lat2 = edge.end.location.lat;
             var lon2 = edge.end.location.lon;
-            var dLon = lon2 - lon1;
+            var dLon = lon1 - lon2;
             var y = Math.sin(dLon) * Math.cos(lat2);
             var x = Math.cos(lat1)*Math.sin(lat2) -
             Math.sin(lat1)*Math.cos(lat2)*Math.cos(dLon);
