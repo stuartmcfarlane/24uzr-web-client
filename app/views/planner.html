@@ -76,6 +76,7 @@
                         <tr>
                             <th>Miles</th>
                             <th>Time</th>
+                            <th>Knots</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -83,8 +84,9 @@
                             ng-mouseenter="planner.onHoverPathInList(path)"
                             ng-mouseleave="planner.onHoverPathInList()"
                             ng-click="planner.onClickPathInList(path)">
-                            <td>{{path.lengthNauticalMiles | number:2}}</td>
-                            <td>{{path.getSailingTime() | number:2}}
+                            <td>{{path.getLengthNauticalMiles() | number:2}}</td>
+                            <td>{{path.getTimeHours()}}
+                            <td>{{path.getSpeedKnots() | number:2}}
                         </tr>
                     </tbody>
                 </table>
@@ -103,13 +105,15 @@
                             <th>Leg</th>
                             <th>Miles</th>
                             <th>Hours</th>
+                            <th>Knots</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <th>Total</th>
-                            <td>{{planner.selectedPath.lengthNauticalMiles | number:2}}</td>
-                            <td>{{planner.selectedPath.getSailingTime() | number:2}}</td>
+                            <td>{{planner.selectedPath.getLengthNauticalMiles() | number:2}}</td>
+                            <td>{{planner.selectedPath.getTimeHours()}}</td>
+                            <td>{{planner.selectedPath.getSpeedKnots() | number:2}}</td>
                         </tr>
                         <tr ng-mouseenter="planner.onHoverLegInList(leg)"
                             ng-mouseleave="planner.onHoverLegInList()"
@@ -124,7 +128,8 @@
                             ng-click="planner.onClickPathInList(path)">
                             <td>{{leg.end.name}}</td>
                             <td>{{leg.getLengthNauticalMiles() | number:2}}</td>
-                            <td>{{leg.getSailingTime()}}</td>
+                            <td>{{leg.getTimeHours()}}</td>
+                            <td>{{leg.getSpeedKnots() | number:2}}</td>
                         </tr>
                     </tbody>
                 </table>

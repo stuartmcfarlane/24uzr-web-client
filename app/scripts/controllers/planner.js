@@ -284,7 +284,7 @@ define(['app',
                     planner.ship && planner.raceTime)
                 {
                     var strategy = graphAlgorithms.strategies.strategy24uzrRules;
-                    var state = strategy.initState(
+                    var initialState = strategy.initState(
                         planner.active.leg.start,
                         planner.active.leg.end,
                         raceTimeSeconds,
@@ -295,23 +295,23 @@ define(['app',
                         planner.active.leg.start,
                         planner.active.leg.end, {
                             strategy: strategy,
-                            state: state
+                            state: initialState
                         }
                     );
                     settings.debug.trace && console.log('got paths');
-                    var edgeHistogram = graphAlgorithms.edgeHistogram(paths);
-                    planner.graphAdapter.setEdgeHistogram(edgeHistogram);
-                    planner.graphAdapter.showEdgeHistogram();
-                    paths = graphAlgorithms.lengthSortPaths(paths);
-                    var pathIdx = 0;
-                    paths = paths.map(function pathToObject(path) {
-                        ++pathIdx;
-                        return _.extend({}, path, {
-                            _id: pathIdx,
-                            name: 'path '+ pathIdx,
-                            lengthNauticalMiles: convert.m2nm(path.lengthMeters)
+                    if (paths) {
+                        paths.forEach(strategy.pathDecorator.bind(null, initialState));
+                        var edgeHistogram = graphAlgorithms.edgeHistogram(paths);
+                        planner.graphAdapter.setEdgeHistogram(edgeHistogram);
+                        planner.graphAdapter.showEdgeHistogram();
+                        paths = graphAlgorithms.lengthSortPaths(paths);
+                        var pathIdx = 0;
+                        paths.forEach(function pathToObject(path) {
+                            ++pathIdx;
+                            path._id = pathIdx;
+                            path.name = 'path '+ pathIdx;
                         });
-                    });
+                    }
                     planner.paths = paths;
                     planner.findAllPathsTime = ~~(performance.now() - perfStartTime);
                     planner.graphAdapter.redraw();

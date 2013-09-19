@@ -1,4 +1,19 @@
-define(['settings', './graph', './edge'], function (settings, Graph, Edge) {
+define([
+    'settings',
+    './graph',
+    './edge',
+    'lib/convert',
+    'lib/graph-algorithms/edge-length',
+    'lib/format'
+],
+function (
+    settings,
+    Graph,
+    Edge,
+    convert,
+    edgeLength,
+    format
+) {
     'use strict';
 
     function Path () {
@@ -49,9 +64,19 @@ define(['settings', './graph', './edge'], function (settings, Graph, Edge) {
     };
 
     Path.prototype.getLengthMeters = function getLengthMeters() {
-        return this.edges.reduce(function sumEdgeLengths(length, edge) {
-            return length + edge.getLengthMeters();
-        }, 0);
+        return this.lengthMeters || edgeLength(this);
+    };
+
+    Path.prototype.getLengthNauticalMiles = function getLengthNauticalMiles() {
+        return convert.m2nm(this.getLengthMeters());
+    };
+
+    Path.prototype.getSpeedKnots = function getSpeedKnots() {
+        return convert.mps2knots(this.mps);
+    };
+
+    Path.prototype.getTimeHours = function getTimeHours() {
+        return format.hours(this.timeSeconds && this.timeSeconds / 3600 || 0);
     };
 
     return Path;

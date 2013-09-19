@@ -9,12 +9,6 @@ define(['settings', 'lodash'],
         settings.debug.trace && console.log('>lengthSortPaths', paths, options);
         options = _.extend({}, defaultOptions, options || {});
 
-        paths = paths.map(function pathLength(path) {
-            return _.extend({}, path, {
-                lengthMeters: path.getLengthMeters()
-            });
-        });
-
         paths.sort(function compareIndex(path1, path2) {
             return path2.lengthMeters - path1.lengthMeters;
         });
