@@ -1,5 +1,5 @@
-define(['settings', 'lib/convert', 'lib/graph-algorithms/edge-length', 'lodash'],
-    function (settings, convert, edgeLength) {
+define(['lodash', 'settings', 'lib/convert', 'lib/graph-algorithms/edge-length'],
+    function (_, settings, convert, edgeLength) {
         'use strict';
 
         function timesUp(state) {

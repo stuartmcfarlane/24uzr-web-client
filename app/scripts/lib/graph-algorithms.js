@@ -1,7 +1,4 @@
 define([
-    'settings',
-    'models/path',
-    'models/edge',
     'lib/graph-algorithms/dijkstra',
     'lib/graph-algorithms/dsl',
     'lib/graph-algorithms/edge-heading',
@@ -12,12 +9,8 @@ define([
     'lib/graph-algorithms/paths-with-time',
     'lib/graph-algorithms/random-path',
     'lib/graph-algorithms/shortest-path',
-    'lib/graph-algorithms/dsl-strategies/24uzr-rules',
-    'lodash'
+    'lib/graph-algorithms/dsl-strategies/24uzr-rules'
 ], function (
-    settings,
-    Path,
-    Edge,
     dijkstra,
     dsl,
     edgeHeading,

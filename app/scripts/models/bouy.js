@@ -1,4 +1,4 @@
-define(['lib/convert', 'lodash'], function (convert) {
+define(['lib/convert'], function (convert) {
     'use strict';
 
     function Bouy (vertex) {

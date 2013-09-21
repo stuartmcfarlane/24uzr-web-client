@@ -1,4 +1,4 @@
-define(['settings', 'lib/convert'], function (settings, convert) {
+define(['lodash', 'settings', 'lib/convert'], function (_, settings, convert) {
     'use strict';
 
     function Ship (ship) {
@@ -23,13 +23,7 @@ define(['settings', 'lib/convert'], function (settings, convert) {
      */
     Ship.prototype.getSpeed = function getSpeed(heading, wind) {
         // get the angle of the wind relative to the ship
-        var angle = wind.angle - heading;
-        while (angle < 0) {
-            angle += 360;
-        }
-        if (angle > 180) {
-            angle = 360 - angle;
-        }
+        var angle = Math.abs(wind.angle  - heading);
         var bft = convert.mps2bft(wind.mag);
         var knots;
         if (angle <= 45) knots = this.speed[bft][0];

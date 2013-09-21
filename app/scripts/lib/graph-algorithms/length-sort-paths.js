@@ -1,5 +1,5 @@
-define(['settings', 'lodash'],
-    function (settings) {
+define(['lodash', 'settings'],
+    function (_, settings) {
     'use strict';
 
     var defaultOptions = {

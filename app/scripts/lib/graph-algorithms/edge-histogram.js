@@ -1,5 +1,5 @@
-define(['settings', 'models/path', 'models/edge', 'lodash'],
-    function (settings, Path, Edge) {
+define(['lodash', 'settings', 'models/path', 'models/edge'],
+    function (_, settings, Path, Edge) {
     'use strict';
 
     var defaultOptions = {

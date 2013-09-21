@@ -1,5 +1,5 @@
 
-define(['./dijkstra', 'lodash'], function (dijkstra) {
+define(['./dijkstra'], function (dijkstra) {
     'use strict';
 
     return dijkstra;    

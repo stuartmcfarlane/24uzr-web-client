@@ -22,6 +22,19 @@ require.config({
         ngResource: {
             deps: ['angular']
         },
+
+        lodash: {
+            exports: '_',
+            init: function () {
+                'use strict';
+                this._.templateSettings = {
+                    evaluate:/\{\{(.+?)\}\}/g,
+                    interpolate:/\{\{=(.+?)\}\}/g,
+                    escape:/\{\{-(.+?)\}\}/g
+                };
+                return this._; //this is what will be actually exported! 
+            }
+        }
     }
 });
 

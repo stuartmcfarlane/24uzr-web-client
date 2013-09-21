@@ -23,8 +23,8 @@
  *
  */
 
-define(['settings', 'models/path', 'lib/graph-algorithms/edge-length', 'lodash'], 
-    function (settings, Path, edgeLength) {
+define(['lodash', 'settings', 'models/path', 'lib/graph-algorithms/edge-length'], 
+    function (_, settings, Path, edgeLength) {
     'use strict';
 
     var defaultOptions = {

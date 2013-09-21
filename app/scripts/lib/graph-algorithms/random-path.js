@@ -1,4 +1,4 @@
-define([ 'models/path', 'lodash'], function (Path) {
+define(['lodash', 'models/path'], function (_, Path) {
     'use strict';
 
     var defaultOptions = {

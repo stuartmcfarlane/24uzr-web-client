@@ -1,5 +1,5 @@
-define(['settings', 'lib/graph-algorithms/edge-length', 'lodash'],
-    function (settings, edgeLength) {
+define(['lodash', 'settings', 'lib/graph-algorithms/edge-length'],
+    function (_, settings, edgeLength) {
     'use strict';
 
     /*

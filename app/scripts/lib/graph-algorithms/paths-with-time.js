@@ -1,5 +1,5 @@
-define(['settings', 'lib/convert', 'lib/graph-algorithms/edge-length', 'lib/graph-algorithms/edge-sailing-time', 'lodash'],
-    function (settings, convert, edgeLength, makeEdgeSailingTime) {
+define(['lodash', 'settings', 'lib/convert', 'lib/graph-algorithms/edge-length', 'lib/graph-algorithms/edge-sailing-time'],
+    function (_, settings, convert, edgeLength, makeEdgeSailingTime) {
     'use strict';
 
     return function pathsWithTime(graph, start, end, options) {
