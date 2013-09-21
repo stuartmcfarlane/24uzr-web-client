@@ -1,4 +1,50 @@
+@import "../../components/bootstrap/less/variables.less";
+@import "variables.less";
+
 #sigma-canvas {
-    height: 600px;
-    background-color: #eee;
+    height: @functions-height-mobile;
+    background-color: @map-background-color;
+}
+
+// Small grid
+//
+
+@media (min-width: @screen-tablet) {
+    #sigma-canvas {
+        height: @functions-height-tablet;
+    }
+    .functions {
+        .pre-scrollable {
+            max-height: @functions-height-tablet;
+        }
+    }
+}
+
+// Medium grid
+//
+
+@media (min-width: @screen-desktop) {
+    #sigma-canvas {
+        height: @functions-height-desktop;
+    }
+    .functions {
+        .pre-scrollable {
+            max-height: @functions-height-desktop;
+        }
+    }
+}
+
+
+// Large grid
+//
+
+@media (min-width: @screen-lg-desktop) {
+    #sigma-canvas {
+        height: @functions-height-lg-desktop;
+    }
+    .functions {
+        .pre-scrollable {
+            max-height: @functions-height-lg-desktop - 83;
+        }
+    }
 }
