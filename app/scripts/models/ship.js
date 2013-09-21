@@ -26,11 +26,21 @@ define(['lodash', 'settings', 'lib/convert'], function (_, settings, convert) {
         var angle = Math.abs(wind.angle  - heading);
         var bft = convert.mps2bft(wind.mag);
         var knots;
-        if (angle <= 45) knots = this.speed[bft][0];
-        else if (angle <= 70) knots = this.speed[bft][45];
-        else if (angle <= 110) knots = this.speed[bft][90];
-        else if (angle <= 155) knots = this.speed[bft][135];
-        else knots = this.speed[bft][180];
+        if (angle <= 60) {
+            knots = this.speed[bft][0];
+        }
+        else if (angle <= 70) {
+            knots = this.speed[bft][45];
+        }
+        else if (angle <= 110) {
+            knots = this.speed[bft][90];
+        }
+        else if (angle <= 155) {
+            knots = this.speed[bft][135];
+        }
+        else {
+            knots = this.speed[bft][180];
+        }
         settings.debug.trace && console.log('getSpeed: ' +
             'heading: ' + Math.floor(heading) + ' deg, ' +
             'wind: ' + Math.floor(wind.angle) + ' deg, ' +
